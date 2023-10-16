@@ -1,4 +1,5 @@
-﻿using Proj.Manager.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Infrastructure.Persistence.SQLServer;
 
@@ -20,7 +21,10 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer
 
         public Projeto Buscar(Guid id)
         {
-            return _dbContext.Projeto.SingleOrDefault(x => x.Id == id);
+            return _dbContext.Projeto
+                    .Include("Tarefas")
+                    .Include("Gerente")
+                    .SingleOrDefault(x => x.Id == id);
         }
 
         public Projeto Criar(Projeto tarefa)

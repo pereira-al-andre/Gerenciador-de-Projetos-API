@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Proj.Manager.Application.DTO.RequestModels.Membro
 {
@@ -15,6 +17,6 @@ namespace Proj.Manager.Application.DTO.RequestModels.Membro
         [AllowNull]
         [MaxLength(255)]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; } = null;
+        public string? Email { get; set; } = null;
     }
 }

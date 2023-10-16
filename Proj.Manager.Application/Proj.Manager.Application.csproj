@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Proj.Manager.Core\Proj.Manager.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+
 </Project>

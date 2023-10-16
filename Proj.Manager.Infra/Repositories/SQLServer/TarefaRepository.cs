@@ -1,4 +1,5 @@
-﻿using Proj.Manager.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Infrastructure.Persistence.SQLServer;
 
@@ -14,13 +15,18 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer
 
         public void Atualizar(Tarefa tarefa)
         {
-            _dbContext.Tarefa.Update(tarefa);
+            _dbContext.Tarefa              
+                .Update(tarefa);
+
             _dbContext.SaveChanges();
         }
 
         public Tarefa Buscar(Guid id)
         {
-            return _dbContext.Tarefa.SingleOrDefault(x => x.Id == id);
+            return _dbContext.Tarefa
+                    .Include("Membros")
+                    .Include("Projeto")
+                    .SingleOrDefault(x => x.Id == id);
         }
 
         public List<Tarefa> ListarPorMembro(Guid membroId)

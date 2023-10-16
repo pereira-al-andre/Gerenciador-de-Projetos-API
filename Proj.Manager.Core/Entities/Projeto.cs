@@ -22,8 +22,6 @@ namespace Proj.Manager.Core.Entities
             this.DataInicio = dataInicio;
             this.DataPrazo = dataPrazo;
             this.GerenteId = gerenteId;
-
-            this.Tarefas = new List<Tarefa>();
         }
 
         public Projeto(
@@ -37,19 +35,17 @@ namespace Proj.Manager.Core.Entities
             this.DataInicio = dataInicio;
             this.DataPrazo = dataInicio.AddDays(15);
             this.GerenteId = gerenteId;
-
-            this.Tarefas = new List<Tarefa>();
         }
 
         public Guid GerenteId { get; set; }
-        public string Nome { get; set; }
-        public string Descricao { get; set; }
+        public string Nome { get; set; } = null!;
+        public string Descricao { get; set; } = null!;
         public DateTime DataInicio { get; set; }
         public DateTime DataPrazo { get; set; }
         public DateTime? DataTermino { get; set; } = null;
         public EStatusProjeto Status { get; set; } = EStatusProjeto.NaoIniciado;
 
-        public List<Tarefa> Tarefas { get; set; }
+        public List<Tarefa> Tarefas { get; set; } = new();
         public Membro Gerente { get; set; } = null!;
 
         public void Atualizar(
@@ -68,19 +64,19 @@ namespace Proj.Manager.Core.Entities
 
         public void Deletar()
         {
-            this.Status = EStatusProjeto.Deletada;
+            this.Status = EStatusProjeto.Deletado;
             this.DataTermino = DateTime.Now;
         }
 
         public void Finalizar()
         {
-            this.Status = EStatusProjeto.Finalizada;
+            this.Status = EStatusProjeto.Finalizado;
             this.DataTermino = DateTime.Now;
         }
 
         public void Cancelar()
         {
-            this.Status = EStatusProjeto.Cancelada;
+            this.Status = EStatusProjeto.Cancelado;
             this.DataTermino = DateTime.Now;
         }
 

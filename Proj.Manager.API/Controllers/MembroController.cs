@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proj.Manager.Application.DTO.RequestModels.Membro;
-using Proj.Manager.Application.DTO.Response;
+using Proj.Manager.Application.DTO.ViewModels;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 
@@ -28,28 +28,35 @@ namespace Proj.Manager.API.Controllers
         [Route("listar")]
         public IActionResult ListaMembros()
         {
-            return Ok(_service.ListaMembros());
+            return Ok(MembroViewModel.ListaDeMembros(_service.ListaMembros()));
         }
 
         [HttpGet]
         [Route("{id}/buscar")]
         public IActionResult BuscarMembro(Guid id)
         {
-            return Ok(_service.BuscarMembro(id));
+            try
+            {
+                return Ok(new MembroViewModel(_service.BuscarMembro(id)));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpGet]
         [Route("{id}/tarefas")]
         public IActionResult ListaTarefasMembro(Guid id)
         {
-            return Ok(_service.ListarMembrosDaTarefa(id));
+            return Ok(TarefaViewModel.ListaDeTarefas(_service.ListarMembrosDaTarefa(id)));
         }
 
         [HttpGet]
         [Route("{id}/projetos")]
         public IActionResult ListarProjetosMembro(Guid id)
         {
-            return Ok(_projetoService.ListarProjetosMembro(id));
+            return Ok(ProjetoViewModel.ListaDeProjetos(_projetoService.ListarProjetosMembro(id)));
         }
 
         [HttpPost]
@@ -64,7 +71,7 @@ namespace Proj.Manager.API.Controllers
 
             try
             {
-                return Ok(new NovoMembroResponse(_service.CriarMembro(membro)));
+                return Ok(new MembroViewModel(_service.CriarMembro(membro)));
             }
             catch (Exception ex)
             {

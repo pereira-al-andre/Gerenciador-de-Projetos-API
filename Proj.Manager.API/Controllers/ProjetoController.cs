@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proj.Manager.Application.DTO.RequestModels.Projeto;
-using Proj.Manager.Application.DTO.Response;
+using Proj.Manager.Application.DTO.ViewModels;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 
@@ -28,21 +28,21 @@ namespace Proj.Manager.API.Controllers
         [Route("listar")]
         public IActionResult ListarProjetos()
         {
-            return Ok(_service.ListarProjetos());
+            return Ok(ProjetoViewModel.ListaDeProjetos(_service.ListarProjetos()));
         }
 
         [HttpGet]
         [Route("{id}/buscar")]
         public IActionResult BuscarProjeto(Guid id)
         {
-            return Ok(_service.BuscarProjeto(id));
+            return Ok(new ProjetoViewModel(_service.BuscarProjeto(id)));
         }
 
         [HttpGet]
         [Route("{id}/tarefas")]
         public IActionResult ListarTarefasDoProjeto(Guid id)
         {
-            return Ok(_tarefaService.ListarTarefasDoProjeto(id));
+            return Ok(TarefaViewModel.ListaDeTarefas(_tarefaService.ListarTarefasDoProjeto(id)));
         }
 
         [HttpPost]
@@ -53,7 +53,7 @@ namespace Proj.Manager.API.Controllers
 
             try
             {
-                return Ok(new NovoProjetoResponse(_service.CriarProjeto(projeto)));
+                return Ok(new ProjetoViewModel(_service.CriarProjeto(projeto)));
             }
             catch (Exception ex)
             {

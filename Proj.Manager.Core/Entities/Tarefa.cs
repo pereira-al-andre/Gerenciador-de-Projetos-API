@@ -8,6 +8,7 @@ namespace Proj.Manager.Core.Entities
         {
             
         }
+
         public Tarefa(
             Guid projetoId,
             string nome, 
@@ -22,17 +23,16 @@ namespace Proj.Manager.Core.Entities
 
             this.DataPrazo = dataPrazo == null ? dataInicio.AddDays(15) : dataPrazo.Value;
 
-            this.Membros = new List<Membro>();
         }
 
         public Guid ProjetoId { get; private set; }
-        public string Nome { get; private set; }
-        public string Descricao { get; private set; }
+        public string Nome { get; private set; } = null!;
+        public string Descricao { get; private set; } = null!;
         public DateTime DataInicio { get; private set; }
         public DateTime DataPrazo { get; private set; }
         public DateTime? DataTermino { get; private set; } = null;
         public EStatusTarefa Status { get; private set; } = EStatusTarefa.NaoIniciado;
-        public List<Membro> Membros { get; private set; } = null!;
+        public List<Membro> Membros { get; private set; } = new();
         public Projeto Projeto { get; private set; } = null!;
         
 

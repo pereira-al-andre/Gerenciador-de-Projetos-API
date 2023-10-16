@@ -1,4 +1,5 @@
-﻿using Proj.Manager.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Infrastructure.Persistence.SQLServer;
 using System;
@@ -21,7 +22,10 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer
 
         public Membro Buscar(Guid id)
         {
-            return _dbContext.Membro.SingleOrDefault(x => x.Id == id);
+            return _dbContext.Membro
+                    .Include("Tarefas")
+                    .Include("Projetos")
+                    .SingleOrDefault(x => x.Id == id);
         }
 
         public Membro Criar(Membro membro)

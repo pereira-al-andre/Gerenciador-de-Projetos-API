@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proj.Manager.Application.DTO.RequestModels.Tarefa;
 using Proj.Manager.Application.DTO.Response;
+using Proj.Manager.Application.DTO.ViewModels;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 
@@ -12,30 +13,32 @@ namespace Proj.Manager.API.Controllers
     {
 
         private readonly ITarefaService _service;
-        public TarefaController(ITarefaService tarefaService)
+        private readonly IMembroService _membroService;
+        public TarefaController(ITarefaService tarefaService, IMembroService membroService)
         {
             _service = tarefaService;
+            _membroService = membroService;
         }
 
         [HttpGet]
         [Route("listar")]
         public IActionResult ListarTarefas()
         {
-            return Ok(_service.ListarTarefas());
+            return Ok(TarefaViewModel.ListaDeTarefas(_service.ListarTarefas()));
         }
 
         [HttpGet]
         [Route("{id}/buscar")]
         public IActionResult BuscarTarefa(Guid id)
         {
-            return Ok(_service.BuscarTarefa(id));
+            return Ok(new TarefaViewModel(_service.BuscarTarefa(id)));
         }
 
         [HttpGet]
         [Route("{id}/membros")]
         public IActionResult ListarMembrosDaTarefa(Guid id)
         {
-            return Ok(_service.BuscarTarefa(id).Membros);
+            return Ok(MembroViewModel.ListaDeMembros(_service.BuscarTarefa(id).Membros));
         }
 
         [HttpPost]
@@ -51,7 +54,7 @@ namespace Proj.Manager.API.Controllers
 
             try
             {
-                return Ok(new NovaTarefaResponse(_service.CriarTarefa(tarefa)));
+                return Ok(new TarefaViewModel(_service.CriarTarefa(tarefa)));
             }
             catch (Exception ex)
             {
@@ -116,10 +119,15 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/membros")]
-        public IActionResult AdicionarMembros(List<Guid> membrosIds)
+        [Route("{tarefaId}/membros")]
+        public IActionResult AdicionarMembros(Guid membroId, Guid tarefaId)
         {
-            return Ok();
+            var tarefa = _service.BuscarTarefa(tarefaId);
+            var membro = _membroService.BuscarMembro(membroId);
+            tarefa.AdicionarMembros(membro);
+            _service.AtualizarTarefa(tarefa);
+
+            return Ok("Membro adicionado");
         }
     }
 }
