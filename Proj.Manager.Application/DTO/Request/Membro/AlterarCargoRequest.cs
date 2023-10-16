@@ -9,8 +9,6 @@ namespace Proj.Manager.Application.DTO.RequestModels.Membro
         public Guid Id { get; set; }
 
         [Required]
-        [Range(1,3)]
-        [DataType(DataType.Custom)]
         public ECargo Cargo { get; set; }
     }
 }

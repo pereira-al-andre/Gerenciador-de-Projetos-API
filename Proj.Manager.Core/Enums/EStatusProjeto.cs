@@ -10,13 +10,13 @@ namespace Proj.Manager.Core.Enums
         [Description("Em Andamento")]
         EmAndamento = 1,
 
-        [Description("Finalizada")]
-        Finalizada = 2,
+        [Description("Finalizado")]
+        Finalizado = 2,
 
-        [Description("Cancelada")]
-        Cancelada = 3,
+        [Description("Cancelado")]
+        Cancelado = 3,
 
-        [Description("Deletada")]
-        Deletada = 4
+        [Description("Deletado")]
+        Deletado = 4
     }
 }
