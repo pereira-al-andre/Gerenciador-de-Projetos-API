@@ -1,4 +1,4 @@
-# Projeto de Gerenciamento de Projetos
+# API de Gerenciamento de Projetos
 
 Esta é uma API para geerenciamento de projetos, tem como principal objetivo visualizar cenários de implementação de Domain-Driven Design (DDD) e Clean Architecture em C# com .NET 7. Ainda está em desenvolvimento e atualmente se encontra em fase inicial. Haverão diversas decisões aqui com foco exclusivo em experimentação, uma vez que não tenho pretensão de disponibilizar esta aplicação em produção com usuários reais (ainda).
 
