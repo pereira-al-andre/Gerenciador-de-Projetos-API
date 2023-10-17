@@ -28,6 +28,7 @@ Escolhi usar o MS SQL Server inicialmente. Para interagir com o banco de dados c
 1. Exception handling
 2. Rich domain models
 3. Autenticação e Autorização
+4. Adição de testes
 
 
 
