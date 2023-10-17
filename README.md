@@ -1,6 +1,6 @@
 # API de Gerenciamento de Projetos
 
-Esta é uma API para geerenciamento de projetos, tem como principal objetivo visualizar cenários de implementação de Domain-Driven Design (DDD) e Clean Architecture em C# com .NET 7. Ainda está em desenvolvimento e atualmente se encontra em fase inicial. Haverão diversas decisões aqui com foco exclusivo em experimentação, uma vez que não tenho pretensão de disponibilizar esta aplicação em produção com usuários reais (ainda).
+Esta é uma API para gerenciamento de projetos, tem como principal objetivo visualizar cenários de implementação de Domain-Driven Design (DDD) e Clean Architecture em C# com .NET 7. Ainda está em desenvolvimento e atualmente se encontra em fase inicial. Haverão diversas decisões aqui com foco exclusivo em experimentação, uma vez que não tenho pretensão de disponibilizar esta aplicação em produção com usuários reais (ainda).
 
 ## Visão Geral
 A API tem como foco principal a criação e gerenciamento básico de um projeto. Para cumprir esse objetivo, o usuário deve ser um membro cadastrado, criar um projeto, definir tarefas para esse projeto e outros membros para essas tarefas. O usuário cadastrado se torna o gerente do projeto. Simples e prático.
