@@ -21,28 +21,48 @@ namespace Proj.Manager.API.Controllers
             _service = projetoService;
             _tarefaService = tarefaService;
             _membroService = membroService;
-
         }
 
         [HttpGet]
         [Route("listar")]
         public IActionResult ListarProjetos()
         {
-            return Ok(ProjetoViewModel.ListaDeProjetos(_service.ListarProjetos()));
+            try
+            {
+                return Ok(ProjetoViewModel.ListaDeProjetos(_service.ListarProjetos().ToList()));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpGet]
         [Route("{id}/buscar")]
         public IActionResult BuscarProjeto(Guid id)
         {
-            return Ok(new ProjetoViewModel(_service.BuscarProjeto(id)));
+            try
+            {
+                return Ok(new ProjetoViewModel(_service.BuscarProjeto(id)));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpGet]
         [Route("{id}/tarefas")]
         public IActionResult ListarTarefasDoProjeto(Guid id)
         {
-            return Ok(TarefaViewModel.ListaDeTarefas(_tarefaService.ListarTarefasDoProjeto(id)));
+            try
+            {
+                return Ok(TarefaViewModel.ListaDeTarefas(_tarefaService.ListarTarefasDoProjeto(id).ToList()));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpPost]
@@ -65,51 +85,93 @@ namespace Proj.Manager.API.Controllers
         [Route("{id}/deletar")]
         public IActionResult DeletarProjeto(Guid id)
         {
-            _service.DeletarProjeto(id);
-            return Ok("Projeto deletado");
+            try
+            {
+                _service.DeletarProjeto(id);
+                return Ok("Projeto deletado");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpPost]
         [Route("{id}/finalizar")]
         public IActionResult FinalizarProjeto(Guid id)
         {
-            _service.FinalizarProjeto(id);
-            return Ok("Projeto finalizado");
+            try
+            {
+                _service.FinalizarProjeto(id);
+                return Ok("Projeto finalizado");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpPost]
         [Route("{id}/iniciar")]
         public IActionResult MarcarProjetoEmAndamento(Guid id)
         {
-            _service.MarcarProjetoEmAndamento(id);
-            return Ok("Projeto em andamento");
+            try
+            {
+                _service.MarcarProjetoEmAndamento(id);
+                return Ok("Projeto em andamento");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpPost]
         [Route("{id}/cancelar")]
         public IActionResult CancelarProjeto(Guid id)
         {
-            _service.CancelarProjeto(id);
-            return Ok("Cancelado com sucesso");
+            try
+            {
+                _service.CancelarProjeto(id);
+                return Ok("Cancelado com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpPut]
         [Route("atualizar")]
         public IActionResult AtualizarProjeto(AtualizarProjetoRequest request)
         {
-            var projeto = _service.BuscarProjeto(request.Id);
-            projeto.Atualizar(request.Nome, request.Descricao, request.DataPrazo);
+            try
+            {
+                var projeto = _service.BuscarProjeto(request.Id);
+                projeto.Atualizar(request.Nome, request.Descricao, request.DataPrazo);
 
-            _service.AtualizarProjeto(projeto);
-            return Ok("Atualizado com sucesso");
+                _service.AtualizarProjeto(projeto);
+                return Ok("Atualizado com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpPost]
         [Route("{id}/tarefa/remover")]
         public IActionResult RemoverTarefa(Guid idTarefa, Guid idProjeto)
         {
-            _service.RemoverTarefa(idTarefa, idProjeto);
-            return Ok("Removido com sucesso");
+            try
+            {
+                _service.RemoverTarefa(idTarefa, idProjeto);
+                return Ok("Removido com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

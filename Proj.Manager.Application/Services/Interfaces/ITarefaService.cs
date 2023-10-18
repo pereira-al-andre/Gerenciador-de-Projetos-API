@@ -4,9 +4,9 @@ namespace Proj.Manager.Application.Services.Interfaces
 {
     public interface ITarefaService
     {
-        public List<Tarefa> ListaTarefasMembro(Guid membroId);
-        public List<Tarefa> ListarTarefasDoProjeto(Guid projetoId);
-        public List<Tarefa> ListarTarefas();
+        public IEnumerable<Tarefa> ListaTarefasMembro(Guid membroId);
+        public IEnumerable<Tarefa> ListarTarefasDoProjeto(Guid projetoId);
+        public IEnumerable<Tarefa> ListarTarefas();
         public Tarefa BuscarTarefa(Guid id);
         public Tarefa CriarTarefa(Tarefa tarefa);
         public void AtualizarTarefa(Tarefa tarefa);

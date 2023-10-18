@@ -2,53 +2,14 @@
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Infrastructure.Persistence.SQLServer;
+using Proj.Manager.Infrastructure.Repositories.SQLServer.Common;
 
 namespace Proj.Manager.Infrastructure.Repositories.SQLServer
 {
-    public class ProjetoRepository : IProjetoRepository
+    public class ProjetoRepository : Repository<Projeto>, IProjetoRepository
     {
-        private readonly SqlServerDBContext _dbContext;
-        public ProjetoRepository(SqlServerDBContext context)
+        public ProjetoRepository(SqlServerDBContext context) : base(context)
         {
-            _dbContext = context;
-        }
-
-        public void Atualizar(Projeto tarefa)
-        {
-            _dbContext.Projeto.Update(tarefa);
-            _dbContext.SaveChanges();
-        }
-
-        public Projeto Buscar(Guid id)
-        {
-            return _dbContext.Projeto
-                    .Include("Tarefas")
-                    .Include("Gerente")
-                    .SingleOrDefault(x => x.Id == id);
-        }
-
-        public Projeto Criar(Projeto tarefa)
-        {
-            _dbContext.Projeto.Add(tarefa);
-            _dbContext.SaveChanges();
-
-            return tarefa;
-        }
-
-        public void Deletar(Projeto tarefa)
-        {
-            _dbContext.Projeto.Remove(tarefa);
-            _dbContext.SaveChanges();
-        }
-
-        public List<Projeto> Listar()
-        {
-            return _dbContext.Projeto.ToList();
-        }
-
-        public List<Projeto> ListarPorMembro(Guid membroId)
-        {
-            return _dbContext.Projeto.Where(x => x.GerenteId == membroId).ToList();
         }
     }
 }
