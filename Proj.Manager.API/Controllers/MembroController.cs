@@ -28,7 +28,15 @@ namespace Proj.Manager.API.Controllers
         [Route("listar")]
         public IActionResult ListaMembros()
         {
-            return Ok(MembroViewModel.ListaDeMembros(_service.ListaMembros()));
+            try
+            {
+                return Ok(MembroViewModel.ListaDeMembros(_service.ListaMembros().ToList()));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+            
         }
 
         [HttpGet]
@@ -49,14 +57,29 @@ namespace Proj.Manager.API.Controllers
         [Route("{id}/tarefas")]
         public IActionResult ListaTarefasMembro(Guid id)
         {
-            return Ok(TarefaViewModel.ListaDeTarefas(_service.ListarMembrosDaTarefa(id)));
+            try
+            {
+                return Ok(TarefaViewModel.ListaDeTarefas(_tarefaService.ListaTarefasMembro(id).ToList()));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+           
         }
 
         [HttpGet]
         [Route("{id}/projetos")]
         public IActionResult ListarProjetosMembro(Guid id)
         {
-            return Ok(ProjetoViewModel.ListaDeProjetos(_projetoService.ListarProjetosMembro(id)));
+            try
+            {
+                return Ok(ProjetoViewModel.ListaDeProjetos(_projetoService.ListarProjetosMembro(id).ToList()));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         [HttpPost]

@@ -4,8 +4,8 @@ namespace Proj.Manager.Application.Services.Interfaces
 {
     public interface IProjetoService
     {
-        public List<Projeto> ListarProjetosMembro(Guid membroId);
-        public List<Projeto> ListarProjetos();
+        public IEnumerable<Projeto> ListarProjetosMembro(Guid membroId);
+        public IEnumerable<Projeto> ListarProjetos();
         public Projeto BuscarProjeto(Guid id);
         public Projeto CriarProjeto(Projeto projeto);
         public void DeletarProjeto(Guid id);

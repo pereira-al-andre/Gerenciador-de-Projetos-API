@@ -1,6 +1,8 @@
 ﻿using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
+using Proj.Manager.Core.Enums;
 using Proj.Manager.Core.Repositories;
+using System.Linq;
 
 namespace Proj.Manager.Application.Services
 {
@@ -14,69 +16,176 @@ namespace Proj.Manager.Application.Services
 
         public void AdicionarMembros(List<Membro> membros, Guid tarefaId)
         {
-            var tarefa = _repository.Buscar(tarefaId);
+            try
+            {
+                var tarefa = _repository.Buscar(tarefaId);
 
-            membros.ForEach(membro => tarefa.AdicionarMembros(membro));
+                if (tarefa == null)
+                    throw new Exception("Tarefa não encontrada.");
 
-            _repository.Atualizar(tarefa);
+                membros.ForEach(membro => tarefa.AdicionarMembros(membro));
+
+                _repository.Atualizar(tarefa);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void AtualizarTarefa(Tarefa tarefa)
         {
-            _repository.Atualizar(tarefa);
+            try
+            {
+                _repository.Atualizar(tarefa);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Tarefa BuscarTarefa(Guid id)
         {
-            return _repository.Buscar(id);
+            try
+            {
+                var tarefa = _repository.Buscar(id);
+
+                if (tarefa == null)
+                    throw new Exception("Tarefa não encontrada.");
+
+                return tarefa;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void CacelarTarefa(Guid id)
         {
-            var tarefa = _repository.Buscar(id);
-            tarefa.Cancelar();
-            _repository.Atualizar(tarefa);
+            try
+            {
+                var tarefa = _repository.Buscar(id);
+
+                if (tarefa == null)
+                    throw new Exception("Nenhuma tarefa foi encontrada para este parâmetro");
+
+                tarefa.Cancelar();
+
+                _repository.Atualizar(tarefa);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Tarefa CriarTarefa(Tarefa tarefa)
         {
-            return _repository.Criar(tarefa);
+            try
+            {
+                return _repository.Criar(tarefa);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void DeletarTarefa(Guid id)
         {
-            var tarefa = _repository.Buscar(id);
-            tarefa.Deletar();
-            _repository.Atualizar(tarefa);
+            try
+            {
+                var tarefa = _repository.Buscar(id);
+
+                if (tarefa == null)
+                    throw new Exception("Nenhuma tarefa foi encontrada para este parâmetro");
+
+                tarefa.Deletar();
+
+                _repository.Atualizar(tarefa);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void FinalizarTarefa(Guid id)
         {
-            var tarefa = _repository.Buscar(id);
-            tarefa.Finalizar();
-            _repository.Atualizar(tarefa);
+            try
+            {
+                var tarefa = _repository.Buscar(id);
+
+                if (tarefa == null)
+                    throw new Exception("Nenhuma tarefa foi encontrada para este parâmetro");
+
+                tarefa.Finalizar();
+
+                _repository.Atualizar(tarefa);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public List<Tarefa> ListarTarefas()
+        public IEnumerable<Tarefa> ListarTarefas()
         {
-            return _repository.Listar();
+            try
+            {
+                return _repository.Listar();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        public List<Tarefa> ListarTarefasDoProjeto(Guid projetoId)
+        public IEnumerable<Tarefa> ListarTarefasDoProjeto(Guid projetoId)
         {
-            return _repository.ListarPorProjeto(projetoId);
+            try
+            {
+                return _repository.Listar(x => x.ProjetoId == projetoId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public List<Tarefa> ListaTarefasMembro(Guid membroId)
+        public IEnumerable<Tarefa> ListaTarefasMembro(Guid membroId)
         {
-            return _repository.ListarPorMembro(membroId);
+            try
+            {
+                return _repository.Listar(x => x.Membros.Any(m => m.Id == membroId));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void MarcarTarefaEmAndamento(Guid id)
         {
-            var tarefa = _repository.Buscar(id);
-            tarefa.MarcarEmAndamento();
-            _repository.Atualizar(tarefa);
+            try
+            {
+                var tarefa = _repository.Buscar(id);
+
+                if (tarefa == null)
+                    throw new Exception("Nenhuma tarefa foi encontrada para este parâmetro");
+
+                tarefa.MarcarEmAndamento();
+
+                _repository.Atualizar(tarefa);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

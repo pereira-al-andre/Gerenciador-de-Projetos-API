@@ -2,7 +2,7 @@
 
 namespace Proj.Manager.Core.Entities
 {
-    public sealed class Tarefa : Entidade
+    public sealed class Tarefa : BaseEntity
     {
         public Tarefa()
         {

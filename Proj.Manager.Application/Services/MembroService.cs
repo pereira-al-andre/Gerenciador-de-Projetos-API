@@ -19,37 +19,96 @@ namespace Proj.Manager.Application.Services
 
         public void AlterarCargo(Membro membro)
         {
-            _repository.Atualizar(membro);
+            try
+            {
+                _repository.Atualizar(membro);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void AlterarSenha(Membro membro)
         {
-            _repository.Atualizar(membro);
+            try
+            {
+                _repository.Atualizar(membro);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void AtualizarMembro(Membro membro)
         {
-            _repository.Atualizar(membro);
+            try
+            {
+                _repository.Atualizar(membro);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Membro BuscarMembro(Guid id)
         {
-            return _repository.Buscar(id);
+            try
+            {
+                var membro = _repository.Buscar(id);
+
+                if (membro == null)
+                    throw new Exception("Membro não encontrado.");
+
+                return membro;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Membro CriarMembro(Membro membro)
         {
-            return _repository.Criar(membro);
+            try
+            {
+                return _repository.Criar(membro);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public List<Membro> ListaMembros()
+        public IEnumerable<Membro> ListaMembros()
         {
-            return _repository.Listar();
+            try
+            {
+                return _repository.Listar();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public List<Tarefa> ListarMembrosDaTarefa(Guid tarefaId)
+        public List<Membro> ListarMembrosDaTarefa(Guid tarefaId)
         {
-            return _tarefaRepository.ListarPorMembro(tarefaId);
+            try
+            {
+                var tarefa = _tarefaRepository.Buscar(tarefaId);
+
+                if (tarefa == null)
+                    throw new Exception("Tarefa não encontrada");
+
+                return tarefa.Membros;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

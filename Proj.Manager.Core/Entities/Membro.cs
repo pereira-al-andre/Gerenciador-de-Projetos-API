@@ -2,7 +2,7 @@
 
 namespace Proj.Manager.Core.Entities
 {
-    public sealed class Membro : Entidade
+    public sealed class Membro : BaseEntity
     {
         public Membro(
             string nome, 
@@ -16,17 +16,17 @@ namespace Proj.Manager.Core.Entities
             this.Cargo = cargo;
         }
 
-        public string Nome { get; private set; }
-        public string Email { get; private set; }
-        public string Senha { get; private set; }
+        public string Nome { get; private set; } = null!;
+        public string Email { get; private set; } = null!;
+        public string Senha { get; private set; } = null!;
         public ECargo Cargo { get; private set; }
 
         public List<Tarefa> Tarefas { get; private set; } = new();
         public List<Projeto> Projetos { get; private set; } = new();
 
         public void Atualizar(
-            string nome,
-            string email)
+            string? nome,
+            string? email)
         {
             if (!String.IsNullOrEmpty(nome)) this.Nome = nome;
             if (!String.IsNullOrEmpty(email)) this.Email = email;

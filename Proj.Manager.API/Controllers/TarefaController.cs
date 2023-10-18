@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proj.Manager.Application.DTO.RequestModels.Tarefa;
-using Proj.Manager.Application.DTO.Response;
 using Proj.Manager.Application.DTO.ViewModels;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
@@ -24,21 +23,45 @@ namespace Proj.Manager.API.Controllers
         [Route("listar")]
         public IActionResult ListarTarefas()
         {
-            return Ok(TarefaViewModel.ListaDeTarefas(_service.ListarTarefas()));
+            try
+            {
+                return Ok(TarefaViewModel.ListaDeTarefas(_service.ListarTarefas().ToList()));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+         
         }
 
         [HttpGet]
         [Route("{id}/buscar")]
         public IActionResult BuscarTarefa(Guid id)
         {
-            return Ok(new TarefaViewModel(_service.BuscarTarefa(id)));
+            try
+            {
+                return Ok(new TarefaViewModel(_service.BuscarTarefa(id)));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+           
         }
 
         [HttpGet]
         [Route("{id}/membros")]
         public IActionResult ListarMembrosDaTarefa(Guid id)
         {
-            return Ok(MembroViewModel.ListaDeMembros(_service.BuscarTarefa(id).Membros));
+            try
+            {
+                return Ok(MembroViewModel.ListaDeMembros(_service.BuscarTarefa(id).Membros));
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+
         }
 
         [HttpPost]
@@ -66,68 +89,116 @@ namespace Proj.Manager.API.Controllers
         [Route("atualizar")]
         public IActionResult AtualizarTarefa(AtualizarTarefaRequest request)
         {
-            var tarefa = _service.BuscarTarefa(request.Id);
-            tarefa.Atualizar(request.Nome, request.Descricao, tarefa.DataPrazo);
+            try
+            {
+                var tarefa = _service.BuscarTarefa(request.Id);
+                tarefa.Atualizar(request.Nome, request.Descricao, tarefa.DataPrazo);
 
-            _service.AtualizarTarefa(tarefa);
+                _service.AtualizarTarefa(tarefa);
 
-            return Ok("Atualizado com sucesso");
+                return Ok("Atualizado com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+
         }
 
         [HttpDelete]
         [Route("{id}/deletar")]
         public IActionResult DeletarTarefa(Guid id)
         {
-            var tarefa = _service.BuscarTarefa(id);
-            tarefa.Deletar();
-            _service.AtualizarTarefa(tarefa);
+            try
+            {
+                var tarefa = _service.BuscarTarefa(id);
+                tarefa.Deletar();
+                _service.AtualizarTarefa(tarefa);
 
-            return Ok("Tarefa deletada");
+                return Ok("Tarefa deletada");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+         
         }
 
         [HttpPost]
         [Route("{id}/cancelar")]
         public IActionResult CacelarTarefa(Guid id)
         {
-            var tarefa = _service.BuscarTarefa(id);
-            tarefa.Cancelar();
-            _service.AtualizarTarefa(tarefa);
+            try
+            {
+                var tarefa = _service.BuscarTarefa(id);
+                tarefa.Cancelar();
+                _service.AtualizarTarefa(tarefa);
 
-            return Ok("Tarefa cancelada");
+                return Ok("Tarefa cancelada");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+
         }
 
         [HttpPost]
         [Route("{id}/finalizar")]
         public IActionResult FinalizarTarefa(Guid id)
         {
-            var tarefa = _service.BuscarTarefa(id);
-            tarefa.Finalizar();
-            _service.AtualizarTarefa(tarefa);
+            try
+            {
+                var tarefa = _service.BuscarTarefa(id);
+                tarefa.Finalizar();
+                _service.AtualizarTarefa(tarefa);
 
-            return Ok("Tarefa finalizada");
+                return Ok("Tarefa finalizada");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+
         }
 
         [HttpPost]
         [Route("{id}/iniciar")]
         public IActionResult MarcarTarefaEmAndamento(Guid id)
         {
-            var tarefa = _service.BuscarTarefa(id);
-            tarefa.MarcarEmAndamento();
-            _service.AtualizarTarefa(tarefa);
+            try
+            {
+                var tarefa = _service.BuscarTarefa(id);
+                tarefa.MarcarEmAndamento();
+                _service.AtualizarTarefa(tarefa);
 
-            return Ok("Tarefa iniciada");
+                return Ok("Tarefa iniciada");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+         
         }
 
         [HttpPut]
         [Route("{tarefaId}/membros")]
         public IActionResult AdicionarMembros(Guid membroId, Guid tarefaId)
         {
-            var tarefa = _service.BuscarTarefa(tarefaId);
-            var membro = _membroService.BuscarMembro(membroId);
-            tarefa.AdicionarMembros(membro);
-            _service.AtualizarTarefa(tarefa);
+            try
+            {
+                var tarefa = _service.BuscarTarefa(tarefaId);
+                var membro = _membroService.BuscarMembro(membroId);
+                tarefa.AdicionarMembros(membro);
+                _service.AtualizarTarefa(tarefa);
 
-            return Ok("Membro adicionado");
+                return Ok("Membro adicionado");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+            
         }
     }
 }

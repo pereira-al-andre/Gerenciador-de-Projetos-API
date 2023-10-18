@@ -56,6 +56,7 @@ namespace Proj.Manager.Application.DTO.ViewModels
         {
 
             var tarefaViewModelList = new List<TarefaViewModel>();
+
             tarefas.ForEach(t => tarefaViewModelList.Add(new TarefaViewModel(t)));
 
             return tarefaViewModelList;

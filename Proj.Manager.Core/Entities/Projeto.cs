@@ -2,7 +2,7 @@
 
 namespace Proj.Manager.Core.Entities
 {
-    public sealed class Projeto : Entidade
+    public sealed class Projeto : BaseEntity
     {
 
         public Projeto()

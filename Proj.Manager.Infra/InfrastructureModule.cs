@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Infrastructure.Persistence.SQLServer;
 using Proj.Manager.Infrastructure.Repositories.SQLServer;
+using Proj.Manager.Infrastructure.Repositories.SQLServer.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Proj.Manager.Infrastructure
     {
         public static IServiceCollection InfrastructureServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(Repository<>), typeof(Repository<>));
             services.AddScoped<IMembroRepository, MembroRepository>();
             services.AddScoped<IProjetoRepository, ProjetoRepository>();
             services.AddScoped<ITarefaRepository, TarefaRepository>();

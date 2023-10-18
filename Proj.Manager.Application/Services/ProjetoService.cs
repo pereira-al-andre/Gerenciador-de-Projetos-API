@@ -19,68 +19,167 @@ namespace Proj.Manager.Application.Services
 
         public void AtualizarProjeto(Projeto projeto)
         {
-            _repository.Atualizar(projeto);
+            try
+            {
+                _repository.Atualizar(projeto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Projeto BuscarProjeto(Guid id)
         {
-            return _repository.Buscar(id);
+            try
+            {
+                var projeto = _repository.Buscar(id);
+
+                if (projeto == null)
+                    throw new Exception("Projeto não encontrado.");
+
+                return projeto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void CancelarProjeto(Guid id)
         {
-            var model = _repository.Buscar(id);
-            model.Cancelar();
+            try
+            {
+                var model = _repository.Buscar(id);
 
-            _repository.Atualizar(model);
+                if (model == null)
+                    throw new Exception("Projeto não encontrado");
+
+                model.Cancelar();
+
+                _repository.Atualizar(model);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Projeto CriarProjeto(Projeto projeto)
         {
-            return _repository.Criar(projeto);
+            try
+            {
+                return _repository.Criar(projeto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }            
         }
 
         public void DeletarProjeto(Guid id)
         {
-            var model = _repository.Buscar(id);
-            model.Deletar();
+            try
+            {
+                var model = _repository.Buscar(id);
 
-            _repository.Atualizar(model);
+                if (model == null)
+                    throw new Exception("Projeto não encontrado");
+
+                model.Deletar();
+
+                _repository.Atualizar(model);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void FinalizarProjeto(Guid id)
         {
-            var model = _repository.Buscar(id);
-            model.Finalizar();
+            try
+            {
+                var model = _repository.Buscar(id);
 
-            _repository.Atualizar(model);
+                if (model == null)
+                    throw new Exception("Projeto não encontrado");
+
+                model.Finalizar();
+
+                _repository.Atualizar(model);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public List<Projeto> ListarProjetos()
+        public IEnumerable<Projeto> ListarProjetos()
         {
-            return _repository.Listar();
+            try
+            {
+                return _repository.Listar();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public List<Projeto> ListarProjetosMembro(Guid membroId)
+        public IEnumerable<Projeto> ListarProjetosMembro(Guid membroId)
         {
-            return _repository.ListarPorMembro(membroId);
+            try
+            {
+                return _repository.Listar(x => x.GerenteId == membroId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void MarcarProjetoEmAndamento(Guid id)
         {
-            var model = _repository.Buscar(id);
-            model.MarcarEmAndamento();
+            try
+            {
+                var model = _repository.Buscar(id);
 
-            _repository.Atualizar(model);
+                if (model == null)
+                    throw new Exception("Projeto não encontrado");
+
+                model.MarcarEmAndamento();
+
+                _repository.Atualizar(model);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void RemoverTarefa(Guid tarefaId, Guid projetoId)
         {
-            var projeto = _repository.Buscar(projetoId);
-            var tarefa = _tarefaRepository.Buscar(tarefaId);
-            projeto.RemoverTarefa(tarefa);
+            try
+            {
+                var projeto = _repository.Buscar(projetoId);
 
-            _repository.Atualizar(projeto);
+                if (projeto == null)
+                    throw new Exception("Projeto não encontrado");
+
+                var tarefa = _tarefaRepository.Buscar(tarefaId);
+
+                if (tarefa == null)
+                    throw new Exception("Tarefa não encontrado");
+
+                projeto.RemoverTarefa(tarefa);
+
+                _repository.Atualizar(projeto);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
