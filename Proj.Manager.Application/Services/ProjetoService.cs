@@ -1,4 +1,5 @@
-﻿using Proj.Manager.Application.Services.Interfaces;
+﻿using Proj.Manager.Application.Exceptions;
+using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
 
@@ -36,7 +37,7 @@ namespace Proj.Manager.Application.Services
                 var projeto = _repository.Buscar(id);
 
                 if (projeto == null)
-                    throw new Exception("Projeto não encontrado.");
+                    throw new ProjetoNaoEncontratoException("Projeto não encontrado.");
 
                 return projeto;
             }
@@ -53,7 +54,7 @@ namespace Proj.Manager.Application.Services
                 var model = _repository.Buscar(id);
 
                 if (model == null)
-                    throw new Exception("Projeto não encontrado");
+                    throw new ProjetoNaoEncontratoException("Projeto não encontrado");
 
                 model.Cancelar();
 
@@ -84,7 +85,7 @@ namespace Proj.Manager.Application.Services
                 var model = _repository.Buscar(id);
 
                 if (model == null)
-                    throw new Exception("Projeto não encontrado");
+                    throw new ProjetoNaoEncontratoException("Projeto não encontrado");
 
                 model.Deletar();
 
@@ -103,7 +104,7 @@ namespace Proj.Manager.Application.Services
                 var model = _repository.Buscar(id);
 
                 if (model == null)
-                    throw new Exception("Projeto não encontrado");
+                    throw new ProjetoNaoEncontratoException("Projeto não encontrado");
 
                 model.Finalizar();
 
@@ -146,7 +147,7 @@ namespace Proj.Manager.Application.Services
                 var model = _repository.Buscar(id);
 
                 if (model == null)
-                    throw new Exception("Projeto não encontrado");
+                    throw new ProjetoNaoEncontratoException("Projeto não encontrado");
 
                 model.MarcarEmAndamento();
 
@@ -165,12 +166,12 @@ namespace Proj.Manager.Application.Services
                 var projeto = _repository.Buscar(projetoId);
 
                 if (projeto == null)
-                    throw new Exception("Projeto não encontrado");
+                    throw new ProjetoNaoEncontratoException("Projeto não encontrado");
 
                 var tarefa = _tarefaRepository.Buscar(tarefaId);
 
                 if (tarefa == null)
-                    throw new Exception("Tarefa não encontrado");
+                    throw new TarefaNaoEncontradaException("Tarefa não encontrado");
 
                 projeto.RemoverTarefa(tarefa);
 

@@ -1,4 +1,5 @@
-﻿using Proj.Manager.Application.Services.Interfaces;
+﻿using Proj.Manager.Application.Exceptions;
+using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
 using System;
@@ -60,7 +61,7 @@ namespace Proj.Manager.Application.Services
                 var membro = _repository.Buscar(id);
 
                 if (membro == null)
-                    throw new Exception("Membro não encontrado.");
+                    throw new MembroNaoEncontratoException("Membro não encontrado.");
 
                 return membro;
             }
@@ -101,7 +102,7 @@ namespace Proj.Manager.Application.Services
                 var tarefa = _tarefaRepository.Buscar(tarefaId);
 
                 if (tarefa == null)
-                    throw new Exception("Tarefa não encontrada");
+                    throw new TarefaNaoEncontradaException("Tarefa não encontrada");
 
                 return tarefa.Membros;
             }

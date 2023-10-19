@@ -1,4 +1,5 @@
-﻿using Proj.Manager.Application.Services.Interfaces;
+﻿using Proj.Manager.Application.Exceptions;
+using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Enums;
 using Proj.Manager.Core.Repositories;
@@ -21,7 +22,7 @@ namespace Proj.Manager.Application.Services
                 var tarefa = _repository.Buscar(tarefaId);
 
                 if (tarefa == null)
-                    throw new Exception("Tarefa não encontrada.");
+                    throw new TarefaNaoEncontradaException("Tarefa não encontrada.");
 
                 membros.ForEach(membro => tarefa.AdicionarMembros(membro));
 
@@ -52,7 +53,7 @@ namespace Proj.Manager.Application.Services
                 var tarefa = _repository.Buscar(id);
 
                 if (tarefa == null)
-                    throw new Exception("Tarefa não encontrada.");
+                    throw new TarefaNaoEncontradaException("Tarefa não encontrada.");
 
                 return tarefa;
             }
@@ -69,7 +70,7 @@ namespace Proj.Manager.Application.Services
                 var tarefa = _repository.Buscar(id);
 
                 if (tarefa == null)
-                    throw new Exception("Nenhuma tarefa foi encontrada para este parâmetro");
+                    throw new TarefaNaoEncontradaException("Nenhuma tarefa foi encontrada para este parâmetro");
 
                 tarefa.Cancelar();
 
@@ -100,7 +101,7 @@ namespace Proj.Manager.Application.Services
                 var tarefa = _repository.Buscar(id);
 
                 if (tarefa == null)
-                    throw new Exception("Nenhuma tarefa foi encontrada para este parâmetro");
+                    throw new TarefaNaoEncontradaException("Nenhuma tarefa foi encontrada para este parâmetro");
 
                 tarefa.Deletar();
 
@@ -119,7 +120,7 @@ namespace Proj.Manager.Application.Services
                 var tarefa = _repository.Buscar(id);
 
                 if (tarefa == null)
-                    throw new Exception("Nenhuma tarefa foi encontrada para este parâmetro");
+                    throw new TarefaNaoEncontradaException("Nenhuma tarefa foi encontrada para este parâmetro");
 
                 tarefa.Finalizar();
 
@@ -175,7 +176,7 @@ namespace Proj.Manager.Application.Services
                 var tarefa = _repository.Buscar(id);
 
                 if (tarefa == null)
-                    throw new Exception("Nenhuma tarefa foi encontrada para este parâmetro");
+                    throw new TarefaNaoEncontradaException("Nenhuma tarefa foi encontrada para este parâmetro");
 
                 tarefa.MarcarEmAndamento();
 
