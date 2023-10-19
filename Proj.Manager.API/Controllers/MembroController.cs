@@ -63,7 +63,7 @@ namespace Proj.Manager.API.Controllers
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return Problem($"Houve um problema ao tentar listar as tarefas do membro: {ex.Message}");
             }
            
         }
@@ -78,7 +78,7 @@ namespace Proj.Manager.API.Controllers
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return Problem($"Houve um problema ao tentar listar os projetos do membro: {ex.Message}");
             }
         }
 
@@ -98,7 +98,7 @@ namespace Proj.Manager.API.Controllers
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return Problem($"Houve um problema ao tentar criar um novo membro: {ex.Message}");
             }
         }
 
@@ -106,18 +106,19 @@ namespace Proj.Manager.API.Controllers
         [Route("atualizar")]
         public IActionResult AtualizarMembro(AtualizarMembroRequest request)
         {
-            var membro = _service.BuscarMembro(request.Id);
-
-            membro.Atualizar(request.Nome, request.Email);
-
             try
             {
+                var membro = _service.BuscarMembro(request.Id);
+
+                membro.Atualizar(request.Nome, request.Email);
+
                 _service.AtualizarMembro(membro);
-                return Ok("Alterado com sucesso");
+
+                return Ok("Alteração realizada");
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return Problem($"Houve um problema ao tentar realizar a alteração: {ex.Message}");
             }
         }
 
@@ -125,18 +126,19 @@ namespace Proj.Manager.API.Controllers
         [Route("cargo/alterar")]
         public IActionResult AlterarCargo(AlterarCargoRequest request)
         {
-            var membro = _service.BuscarMembro(request.Id);
-
-            membro.AlterarCargo(request.Cargo);
-
             try
             {
+                var membro = _service.BuscarMembro(request.Id);
+
+                membro.AlterarCargo(request.Cargo);
+
                 _service.AlterarCargo(membro);
-                return Ok("Alterado com sucesso");
+
+                return Ok("Alteração realizada");
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return Problem($"Houve um problema ao alterar o cargo: {ex.Message}");
             }
         }
 
@@ -144,18 +146,19 @@ namespace Proj.Manager.API.Controllers
         [Route("senha/alterar")]
         public IActionResult AlterarSenha(AlterarSenhaRequest request)
         {
-            var membro = _service.BuscarMembro(request.Id);
-
-            membro.AlterarSenha(request.NovaSenha);
-
             try
             {
+                var membro = _service.BuscarMembro(request.Id);
+
+                membro.AlterarSenha(request.NovaSenha);
+
                 _service.AlterarSenha(membro);
-                return Ok("Alterado com sucesso");
+
+                return Ok("Alteração realizada");
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message);
+                return Problem($"Houve um problema ao alterar a senha: {ex.Message}");
             }
         }
     }

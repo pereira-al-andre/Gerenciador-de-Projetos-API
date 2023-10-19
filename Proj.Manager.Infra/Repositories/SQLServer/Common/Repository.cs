@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories.Common;
+using Proj.Manager.Infrastructure.Exceptions;
 using Proj.Manager.Infrastructure.Persistence.SQLServer;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             {
                 _DbSet.Update(entity);
                 _dbContext.SaveChanges();
+
             }
             catch (Exception)
             {
