@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Proj.Manager.Core.Entities;
+using Proj.Manager.Core.Primitives;
 using Proj.Manager.Core.Repositories.Common;
-using Proj.Manager.Infrastructure.Exceptions;
 using Proj.Manager.Infrastructure.Persistence.SQLServer;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
         private readonly SqlServerDBContext _dbContext;
         private readonly DbSet<TEntity> _DbSet;
@@ -22,7 +21,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             _DbSet = context.Set<TEntity>();
         }
 
-        public void Atualizar(TEntity entity)
+        public void Update(TEntity entity)
         {
             try
             {
@@ -36,7 +35,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public TEntity Buscar(Guid id)
+        public TEntity Find(Guid id)
         {
             try
             {
@@ -48,7 +47,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public TEntity Buscar(Expression<Func<TEntity, bool>> filter = null)
+        public TEntity Find(Expression<Func<TEntity, bool>> filter = null)
         {
             try
             {
@@ -60,7 +59,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public TEntity Criar(TEntity entity)
+        public TEntity Create(TEntity entity)
         {
             try
             {
@@ -75,7 +74,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public void Deletar(TEntity entity)
+        public void Delete(TEntity entity)
         {
             try
             {
@@ -88,7 +87,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public IEnumerable<TEntity> Listar()
+        public IEnumerable<TEntity> All()
         {
             try
             {
@@ -100,7 +99,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public IEnumerable<TEntity> Listar(Expression<Func<TEntity, bool>> filter = null)
+        public IEnumerable<TEntity> All(Expression<Func<TEntity, bool>> filter = null)
         {
             try
             {

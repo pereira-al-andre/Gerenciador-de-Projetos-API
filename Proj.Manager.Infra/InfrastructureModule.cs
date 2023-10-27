@@ -15,12 +15,12 @@ namespace Proj.Manager.Infrastructure
 {
     public static class InfrastructureModule
     {
-        public static IServiceCollection InfrastructureServices(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(Repository<>), typeof(Repository<>));
-            services.AddScoped<IMembroRepository, MembroRepository>();
-            services.AddScoped<IProjetoRepository, ProjetoRepository>();
-            services.AddScoped<ITarefaRepository, TarefaRepository>();
+            services.AddScoped<IMemberRepositoy, MemberRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<ITaskRepository, TaskRepository>();
 
             return services;
         }

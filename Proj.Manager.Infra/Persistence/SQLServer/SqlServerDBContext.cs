@@ -8,53 +8,55 @@ namespace Proj.Manager.Infrastructure.Persistence.SQLServer
         public SqlServerDBContext(DbContextOptions<SqlServerDBContext> options) : base(options)
         { }
 
-        public DbSet<Projeto> Projeto { get; set; }
-        public DbSet<Membro> Membro { get; set; }
-        public DbSet<Tarefa> Tarefa { get; set; }
+        public DbSet<Project> Project { get; set; }
+        public DbSet<Member> Member { get; set; }
+        public DbSet<Core.Entities.Task> Task { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            ProjetoBuilder(modelBuilder);
-            MembroBuilder(modelBuilder);
-            TarefasBuilder(modelBuilder);
+            ProjectBuilder(modelBuilder);
+            MemberBuilder(modelBuilder);
+            TasksBuilder(modelBuilder);
         }
 
-        public void ProjetoBuilder(ModelBuilder modelBuilder)
+        public void ProjectBuilder(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Projeto>(e =>
+            modelBuilder.Entity<Project>(e =>
             {
-                e.ToTable(Table.Projeto);
+                e.ToTable(Table.Project);
 
                 e.HasKey(x => x.Id);
 
-                e.Property(x => x.GerenteId)
-                    .HasColumnName("GerenteId")
+                e.Property(x => x.ManagerId)
+                    .HasColumnName("ManagerId")
                     .IsRequired();
 
-                e.Property(x => x.Nome)
+                e.OwnsOne(x => x.Name)
+                    .Property(x => x.Value)
                     .HasColumnName("Name")
                     .HasColumnType("varchar(50)")
                     .HasMaxLength(50)
                     .IsRequired();
 
-                e.Property(x => x.Descricao)
-                    .HasColumnName("Descricao")
+                e.OwnsOne(x => x.Description)
+                    .Property(x => x.Value)
+                    .HasColumnName("Description")
                     .HasColumnType("varchar(255)")
                     .HasMaxLength(255)
                     .IsRequired();
 
-                e.Property(x => x.DataInicio)
-                    .HasColumnName("DataInicio")
+                e.Property(x => x.StartDate)
+                    .HasColumnName("StartDate")
                     .HasColumnType("datetime")
                     .IsRequired();
 
-                e.Property(x => x.DataPrazo)
-                   .HasColumnName("DataPrazo")
+                e.Property(x => x.EndDate)
+                   .HasColumnName("EndDate")
                    .HasColumnType("datetime")
                    .IsRequired();
 
-                e.Property(x => x.DataTermino)
-                   .HasColumnName("DataTermino")
+                e.Property(x => x.FinishDate)
+                   .HasColumnName("FinishDate")
                    .HasColumnType("datetime")
                    .IsRequired(false);
 
@@ -62,101 +64,106 @@ namespace Proj.Manager.Infrastructure.Persistence.SQLServer
                    .HasColumnName("Status")
                    .HasColumnType("int");
 
-                e.HasMany(x => x.Tarefas)
+                e.HasMany(x => x.Tasks)
                     .WithOne()
-                    .HasForeignKey(x => x.ProjetoId);
+                    .HasForeignKey(x => x.ProjectId);
 
-                e.HasOne(x => x.Gerente)
-                    .WithMany(x => x.Projetos)
-                    .HasForeignKey(x => x.GerenteId)
+                e.HasOne(x => x.Manager)
+                    .WithMany(x => x.Projects)
+                    .HasForeignKey(x => x.ManagerId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
         }
-        public void MembroBuilder(ModelBuilder modelBuilder)
+        public void MemberBuilder(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Membro>(e =>
+            modelBuilder.Entity<Member>(e =>
             {
-                e.ToTable(Table.Membro);
+                e.ToTable(Table.Member);
 
                 e.HasKey(x => x.Id);
 
-                e.Property(x => x.Nome)
-                    .HasColumnName("Nome")
+                e.OwnsOne(x => x.Name)
+                    .Property(x => x.Value)
+                    .HasColumnName("Name")
                     .HasColumnType("varchar(50)")
                     .HasMaxLength(50)
                     .IsRequired();
 
-                e.Property(x => x.Email)
+                e.OwnsOne(x => x.Email)
+                    .Property(x => x.Value)
                     .HasColumnName("Email")
                     .HasColumnType("varchar(255)")
                     .HasMaxLength(255)
                     .IsRequired();
 
-                e.Property(x => x.Senha)
-                    .HasColumnName("Senha")
+                e.OwnsOne(x => x.Password)
+                    .Property(x => x.Value)
+                    .HasColumnName("Password")
                     .HasColumnType("varchar(255)")
                     .HasMaxLength(255)
                     .IsRequired();
 
-                e.Property(x => x.Cargo)
-                    .HasColumnName("Cargo")
+                e.Property(x => x.Role)
+                    .HasColumnName("Role")
                     .HasColumnType("int")
                     .IsRequired();
 
-                e.HasMany(x => x.Tarefas)
-                   .WithMany(x => x.Membros);
+                e.HasMany(x => x.Tasks)
+                   .WithMany(x => x.Members);
 
-                e.HasMany(x => x.Projetos)
-                   .WithOne(x => x.Gerente)
-                   .HasForeignKey(x => x.GerenteId)
+                e.HasMany(x => x.Projects)
+                   .WithOne(x => x.Manager)
+                   .HasForeignKey(x => x.ManagerId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
         }
-        public void TarefasBuilder(ModelBuilder modelBuilder)
+        public void TasksBuilder(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Tarefa>(e =>
+            modelBuilder.Entity<Core.Entities.Task>(e =>
             {
-                e.ToTable(Table.Tarefa);
+                e.ToTable(Table.Task);
 
                 e.HasKey(x => x.Id);
 
-                e.Property(x => x.ProjetoId)
-                   .HasColumnName("ProjetoId")
+                e.Property(x => x.ProjectId)
+                   .HasColumnName("ProjectId")
                    .IsRequired();
 
-                e.Property(x => x.Nome)
-                    .HasColumnName("Nome")
+                e.OwnsOne(x => x.Name)
+                    .Property(x => x.Value)
+                    .HasColumnName("Name")
                     .HasColumnType("varchar(50)")
                     .HasMaxLength(50)
                     .IsRequired();
 
-                e.Property(x => x.Descricao)
-                    .HasColumnName("Descricao")
+                e.OwnsOne(x => x.Description)
+                    .Property(x => x.Value)
+                    .HasColumnName("Description")
                     .HasColumnType("varchar(255)")
                     .HasMaxLength(255)
                     .IsRequired();
 
-                e.Property(x => x.DataInicio)
-                    .HasColumnName("DataInicio")
+                e.Property(x => x.StartDate)
+                    .HasColumnName("StartDate")
                     .HasColumnType("datetime")
                     .IsRequired();
 
-                e.Property(x => x.DataPrazo)
-                    .HasColumnName("DataPrazo")
+                e.Property(x => x.EndDate)
+                    .HasColumnName("EndDate")
                     .HasColumnType("datetime")
                     .IsRequired();
 
-                e.Property(x => x.DataTermino)
-                    .HasColumnName("DataTermino")
+                e.Property(x => x.FinishDate)
+                    .HasColumnName("FinishDate")
                     .HasColumnType("datetime")
                     .IsRequired(false);
 
-                e.HasMany(x => x.Membros)
-                    .WithMany(x => x.Tarefas);
+                e.HasMany(x => x.Members)
+                    .WithMany(x => x.Tasks);
 
-                e.HasOne(x => x.Projeto)
-                    .WithMany(x => x.Tarefas)
-                    .HasForeignKey(x => x.ProjetoId)
+                e.HasOne(x => x.Project)
+                    .WithMany(x => x.Tasks)
+                    .HasForeignKey(x => x.ProjectId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
         }

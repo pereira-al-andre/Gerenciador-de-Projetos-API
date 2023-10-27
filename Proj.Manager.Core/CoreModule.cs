@@ -10,7 +10,7 @@ namespace Proj.Manager.Core
 {
     public static class CoreModule
     {
-        public static IServiceCollection CoreServices(this IServiceCollection services)
+        public static IServiceCollection AddCoreServices(this IServiceCollection services)
         {
             return services;
         }
