@@ -4,10 +4,13 @@ namespace Proj.Manager.Core.Extensions;
 
 public static class EnumExtension
 {
-    public static string RetornarDescricao(this Enum value)
+    public static string GetDescription(this Enum value)
     {
-        var campo = value.GetType().GetField(value.ToString());
-        var atributos = (DescriptionAttribute[])campo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        var field = value?.GetType()?.GetField(value.ToString());
+
+        if (field == null) return value.ToString();
+
+        var atributos = (DescriptionAttribute[])field.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
         return atributos.Length > 0 ? atributos[0].Description : value.ToString();
     }

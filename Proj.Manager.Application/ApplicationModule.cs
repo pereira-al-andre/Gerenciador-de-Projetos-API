@@ -12,11 +12,11 @@ namespace Proj.Manager.Application
 {
     public static class ApplicationModule
     {
-        public static IServiceCollection ApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddTransient<IMembroService, MembroService>();
-            services.AddTransient<IProjetoService, ProjetoService>();
-            services.AddTransient<ITarefaService, TarefaService>();
+            services.AddTransient<IMemberService, MemberService>();
+            services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<ITaskService, TaskService>();
 
             return services;
         }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proj.Manager.Infrastructure.Persistence.SQLServer;
 
@@ -11,9 +12,11 @@ using Proj.Manager.Infrastructure.Persistence.SQLServer;
 namespace Proj.Manager.Infrastructure.Persistence.SQLServer.Migrations
 {
     [DbContext(typeof(SqlServerDBContext))]
-    partial class SqlServerDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231027014959_MigrationV1")]
+    partial class MigrationV1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

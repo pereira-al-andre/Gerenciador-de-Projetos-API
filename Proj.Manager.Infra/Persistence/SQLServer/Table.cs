@@ -8,8 +8,8 @@ namespace Proj.Manager.Infrastructure.Persistence.SQLServer
 {
     public static class Table
     {
-        public const string Projeto = "Projeto";
-        public const string Membro = "Membro";
-        public const string Tarefa = "Tarefa";
+        public const string Project = "Project";
+        public const string Member = "Member";
+        public const string Task = "Task";
     }
 }
