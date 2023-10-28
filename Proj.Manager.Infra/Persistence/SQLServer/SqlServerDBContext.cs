@@ -27,7 +27,8 @@ namespace Proj.Manager.Infrastructure.Persistence.SQLServer
 
                 e.HasKey(x => x.Id);
 
-                e.Property(x => x.ManagerId)
+                e.OwnsOne(x => x.Manager)
+                    .Property(x => x.Id)
                     .HasColumnName("ManagerId")
                     .IsRequired();
 
@@ -145,11 +146,6 @@ namespace Proj.Manager.Infrastructure.Persistence.SQLServer
 
                 e.Property(x => x.StartDate)
                     .HasColumnName("StartDate")
-                    .HasColumnType("datetime")
-                    .IsRequired();
-
-                e.Property(x => x.EndDate)
-                    .HasColumnName("EndDate")
                     .HasColumnType("datetime")
                     .IsRequired();
 

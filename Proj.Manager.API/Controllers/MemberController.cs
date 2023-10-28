@@ -60,7 +60,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                return Ok(TaskViewModel.TasksList(_taskService.MembersList(id).ToList()));
+                return Ok(_taskService.ListTaskMembers(id));
             }
             catch (Exception ex)
             {
@@ -75,7 +75,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                return Ok(ProjectViewModel.ProjectsList(_projectService.ListMemberProjects(id).ToList()));
+                return Ok(_projectService.ListMemberProjects(id));
             }
             catch (Exception ex)
             {

@@ -1,30 +1,90 @@
-﻿using Proj.Manager.Application.Exceptions;
+﻿using Proj.Manager.Application.DTO.RequestModels.Task;
+using Proj.Manager.Application.DTO.ViewModels;
+using Proj.Manager.Application.Exceptions;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Enums;
 using Proj.Manager.Core.Repositories;
+using Proj.Manager.Core.ValueObjects;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Proj.Manager.Application.Services
 {
     public class TaskService : ITaskService
     {
         private readonly ITaskRepository _repository;
-        public TaskService(ITaskRepository taskRepository)
+        private readonly IMemberRepositoy _memberRepositoy;
+        public TaskService(
+            ITaskRepository taskRepository, 
+            IMemberRepositoy memberRepositoy)
         {
             _repository = taskRepository;
+            _memberRepositoy = memberRepositoy;
         }
 
-        public void AddMembers(List<Member> members, Guid taskId)
+        public TaskViewModel Find(Guid id)
         {
             try
             {
-                var task = _repository.Find(taskId);
+                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task não encontrada.");
 
-                if (task == null)
-                    throw new TaskNotFoundException("Task não encontrada.");
+                return new TaskViewModel(task);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<TaskViewModel> All()
+        {
+            try
+            {
+                var tasks = _repository.All();
 
-                members.ForEach(member => task.AddMember(member));
+                return TaskViewModel.TasksList(tasks.ToList());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<TaskViewModel> ListProjectTasks(Guid projectId)
+        {
+            try
+            {
+                var tasks = _repository.All(x => x.ProjectId == projectId);
+
+                return TaskViewModel.TasksList(tasks.ToList());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<MemberViewModel> ListTaskMembers(Guid taskId)
+        {
+            try
+            {
+                var task = _repository.Find(taskId) ?? throw new Exception("Task not found");
+                var members = task.Members.OrderBy(x => x.Name);
+                return MemberViewModel.MembersList(members.ToList());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void AddMembers(Guid[] members, Guid taskId)
+        {
+            try
+            {
+                var task = _repository.Find(taskId) ?? throw new TaskNotFoundException("Task not found.");
+
+                var membersList = _memberRepositoy.All(x => members.Contains(x.Id)).ToList();
+
+                membersList.ForEach(task.AddMember);
 
                 _repository.Update(task);
             }
@@ -33,11 +93,14 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
-        public void UpdateTask(Core.Entities.Task task)
+        public void Update(UpdateTaskRequest request)
         {
             try
             {
+                var task = _repository.Find(request.Id) ?? throw new Exception("Task not found.");
+
+                task.Update(new Name(request.Name), new Description(request.Description));
+
                 _repository.Update(task);
             }
             catch (Exception)
@@ -45,33 +108,11 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
-        public Core.Entities.Task Find(Guid id)
-        {
-            try
-            {
-                var task = _repository.Find(id);
-
-                if (task == null)
-                    throw new TaskNotFoundException("Task não encontrada.");
-
-                return task;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         public void Cancel(Guid id)
         {
             try
             {
-                var task = _repository.Find(id);
-
-                if (task == null)
-                    throw new TaskNotFoundException("Nenhuma task foi encontrada para este parâmetro");
-
+                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task not found.");
                 task.Cancel();
 
                 _repository.Update(task);
@@ -81,27 +122,11 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
-        public Core.Entities.Task Create(Core.Entities.Task task)
-        {
-            try
-            {
-                return _repository.Create(task);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         public void Delete(Guid id)
         {
             try
             {
-                var task = _repository.Find(id);
-
-                if (task == null)
-                    throw new TaskNotFoundException("Nenhuma task foi encontrada para este parâmetro");
+                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task not found.");
 
                 task.Delete();
 
@@ -112,15 +137,11 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
         public void Complete(Guid id)
         {
             try
             {
-                var task = _repository.Find(id);
-
-                if (task == null)
-                    throw new TaskNotFoundException("Nenhuma task foi encontrada para este parâmetro");
+                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task not found.");
 
                 task.Complete();
 
@@ -131,52 +152,11 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
-        public IEnumerable<Core.Entities.Task> All()
-        {
-            try
-            {
-                return _repository.All();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        public IEnumerable<Core.Entities.Task> ListProjectTasks(Guid projectId)
-        {
-            try
-            {
-                return _repository.All(x => x.ProjectId == projectId);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public IEnumerable<Core.Entities.Task> MembersList(Guid memberId)
-        {
-            try
-            {
-                return _repository.All(x => x.Members.Any(m => m.Id == memberId));
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         public void Start(Guid id)
         {
             try
             {
-                var task = _repository.Find(id);
-
-                if (task == null)
-                    throw new TaskNotFoundException("Nenhuma task foi encontrada para este parâmetro");
+                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task not found.");
 
                 task.Start();
 

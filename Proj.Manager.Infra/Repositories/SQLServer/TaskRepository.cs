@@ -11,5 +11,18 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer
         public TaskRepository(SqlServerDBContext context) : base(context)
         {
         }
+
+        public void Delete(Core.Entities.Task entity)
+        {
+            try
+            {
+                _DbSet.Remove(entity);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

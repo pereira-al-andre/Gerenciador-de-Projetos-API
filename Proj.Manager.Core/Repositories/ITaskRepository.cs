@@ -3,6 +3,6 @@ using Proj.Manager.Core.Repositories.Common;
 
 namespace Proj.Manager.Core.Repositories
 {
-    public interface ITaskRepository : IRepository<Entities.Task>
+    public interface ITaskRepository : IRepository<Entities.Task>, IDeletable<Entities.Task>
     { }
 }

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proj.Manager.Application.DTO.RequestModels.Task;
-using Proj.Manager.Application.DTO.ViewModels;
 using Proj.Manager.Application.Services.Interfaces;
-using Proj.Manager.Core.Entities;
-using Proj.Manager.Core.ValueObjects;
 
 namespace Proj.Manager.API.Controllers
 {
@@ -26,7 +23,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                return Ok(TaskViewModel.TasksList(_service.All().ToList()));
+                return Ok(_service.All());
             }
             catch (Exception ex)
             {
@@ -41,7 +38,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                return Ok(new TaskViewModel(_service.Find(id)));
+                return Ok(_service.Find(id));
             }
             catch (Exception ex)
             {
@@ -51,38 +48,16 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/members")]
-        public IActionResult ListTaskMembers(Guid id)
+        [Route("{taskId}/members")]
+        public IActionResult ListTaskMembers(Guid taskId)
         {
             try
             {
-                return Ok(MemberViewModel.MembersList(_service.Find(id).Members));
+                return Ok(_service.ListTaskMembers(taskId));
             }
             catch (Exception ex)
             {
                 return Problem($"We encountered an issue while attempting to get the memebers: {ex.Message}");
-            }
-
-        }
-
-        [HttpPost]
-        [Route("create")]
-        public IActionResult Create(CreateTaskRequest request)
-        {
-            var task = new Core.Entities.Task(
-                request.ProjectId, 
-                new Name(request.Name), 
-                new Description(request.Description), 
-                request.StartDate,
-                request.EndDate);
-
-            try
-            {
-                return Ok(new TaskViewModel(_service.Create(task)));
-            }
-            catch (Exception ex)
-            {
-                return Problem($"We encountered an issue while attempting to create a new task: {ex.Message}");
             }
         }
 
@@ -92,10 +67,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                var task = _service.Find(request.Id);
-                task.Update(new Name(request.Name), new Description(request.Description), task.EndDate);
-
-                _service.UpdateTask(task);
+                _service.Update(request);
 
                 return NoContent();
             }
@@ -111,10 +83,8 @@ namespace Proj.Manager.API.Controllers
         public IActionResult Delete(Guid id)
         {
             try
-            {
-                var task = _service.Find(id);
-                task.Delete();
-                _service.UpdateTask(task);
+            {               
+                _service.Delete(id);
 
                 return NoContent();
             }
@@ -131,9 +101,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                var task = _service.Find(id);
-                task.Cancel();
-                _service.UpdateTask(task);
+                _service.Cancel(id);
 
                 return NoContent();
             }
@@ -150,9 +118,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                var task = _service.Find(id);
-                task.Complete();
-                _service.UpdateTask(task);
+                _service.Complete(id);
 
                 return NoContent();
             }
@@ -169,9 +135,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                var task = _service.Find(id);
-                task.Start();
-                _service.UpdateTask(task);
+                _service.Start(id);
 
                 return NoContent();
             }
@@ -184,14 +148,11 @@ namespace Proj.Manager.API.Controllers
 
         [HttpPost]
         [Route("{taskId}/add/member")]
-        public IActionResult AddMember(Guid memberId, Guid taskId)
+        public IActionResult AddMember(Guid[] members, Guid taskId)
         {
             try
             {
-                var task = _service.Find(taskId);
-                var member = _memberService.Find(memberId);
-                task.AddMember(member);
-                _service.UpdateTask(task);
+                _service.AddMembers(members, taskId);
 
                 return NoContent();
             }

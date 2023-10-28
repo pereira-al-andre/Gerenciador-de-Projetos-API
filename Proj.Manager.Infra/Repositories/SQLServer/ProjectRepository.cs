@@ -11,5 +11,17 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer
         public ProjectRepository(SqlServerDBContext context) : base(context)
         {
         }
+        public void Delete(Project entity)
+        {
+            try
+            {
+                _DbSet.Remove(entity);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

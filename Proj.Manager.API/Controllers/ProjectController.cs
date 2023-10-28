@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proj.Manager.Application.DTO.RequestModels.Project;
+using Proj.Manager.Application.DTO.RequestModels.Task;
 using Proj.Manager.Application.DTO.ViewModels;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
@@ -13,12 +14,15 @@ namespace Proj.Manager.API.Controllers
     {
         private readonly IProjectService _service;
         private readonly ITaskService _taskService;
+        private readonly IMemberService _memberService;
         public ProjectController(
             IProjectService projectService, 
-            ITaskService taskService)
+            ITaskService taskService,
+            IMemberService memberService)
         {
             _service = projectService;
             _taskService = taskService;
+            _memberService = memberService;
         }
 
         [HttpGet]
@@ -27,7 +31,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                return Ok(ProjectViewModel.ProjectsList(_service.All().ToList()));
+                return Ok(_service.All());
             }
             catch (Exception ex)
             {
@@ -50,12 +54,12 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/tasks")]
-        public IActionResult ListProjectTasks(Guid id)
+        [Route("{projectId}/tasks")]
+        public IActionResult ListProjectTasks(Guid projectId)
         {
             try
             {
-                return Ok(TaskViewModel.TasksList(_taskService.ListProjectTasks(id).ToList()));
+                return Ok(_taskService.ListProjectTasks(projectId));
             }
             catch (Exception ex)
             {
@@ -67,15 +71,29 @@ namespace Proj.Manager.API.Controllers
         [Route("create")]
         public IActionResult Create(CreateProjectRequest request)
         {
-            var project = new Project(request.ManagerId, new Name(request.Name), new Description(request.Description), request.StartDate);
-
             try
             {
-                return Ok(new ProjectViewModel(_service.Create(project)));
+                return Ok(_service.Create(request));
             }
             catch (Exception ex)
             {
                 return Problem($"We encountered an issue while attempting to create e new project: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+        [Route("{projectId}/add/task")]
+        public IActionResult AddTask(CreateTaskRequest request, Guid projectId)
+        {
+            try
+            {  
+                _service.AddTask(request, projectId);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Problem($"We encountered an issue while attempting to remove the task: {ex.Message}");
             }
         }
 
@@ -106,21 +124,6 @@ namespace Proj.Manager.API.Controllers
             catch (Exception ex)
             {
                 return Problem($"We encountered an issue while attempting to complete: {ex.Message}");
-            }
-        }
-
-        [HttpPut]
-        [Route("{id}/start")]
-        public IActionResult Start(Guid id)
-        {
-            try
-            {
-                _service.Start(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return Problem($"We encountered an issue while attempting to start: {ex.Message}");
             }
         }
 

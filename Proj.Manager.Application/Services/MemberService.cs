@@ -61,7 +61,7 @@ namespace Proj.Manager.Application.Services
                 var member = _repository.Find(id);
 
                 if (member == null)
-                    throw new MemberNotFoundException("Member não encontrado.");
+                    throw new MemberNotFoundException("Member not found.");
 
                 return member;
             }
@@ -102,7 +102,7 @@ namespace Proj.Manager.Application.Services
                 var task = _taskRepository.Find(taskId);
 
                 if (task == null)
-                    throw new TaskNotFoundException("Task não encontrada");
+                    throw new TaskNotFoundException("Task not found");
 
                 return task.Members;
             }
