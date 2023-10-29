@@ -22,9 +22,8 @@ namespace Proj.Manager.Application.DTO.ViewModels
         public Guid ManagerId { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public DateTime? FinishDate { get; set; } = null;
+        public DateTime? StartDate { get; set; }
+        public DateTime? FinishDate { get; set; }
         public ProjectStatus Status { get; set; } = ProjectStatus.ToDo;
         public string StatusDescription { get { return this.Status.GetDescription(); } }
 
@@ -37,7 +36,6 @@ namespace Proj.Manager.Application.DTO.ViewModels
             this.Name = project.Name.Value;
             this.Description = project.Description.Value;
             this.StartDate = project.StartDate;
-            this.EndDate = project.EndDate;
             this.FinishDate = project.FinishDate;
             this.Status = project.Status;
 

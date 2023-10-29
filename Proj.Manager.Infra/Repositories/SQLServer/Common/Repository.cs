@@ -13,8 +13,9 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
-        private readonly SqlServerDBContext _dbContext;
-        private readonly DbSet<TEntity> _DbSet;
+        protected readonly SqlServerDBContext _dbContext;
+        protected readonly DbSet<TEntity> _DbSet;
+
         public Repository(SqlServerDBContext context)
         {
             _dbContext = context;
@@ -35,7 +36,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public TEntity Find(Guid id)
+        public TEntity? Find(Guid id)
         {
             try
             {
@@ -47,11 +48,35 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public TEntity Find(Expression<Func<TEntity, bool>> filter = null)
+        public TEntity? Find(Expression<Func<TEntity, bool>> filter)
         {
             try
             {
                 return _DbSet.SingleOrDefault(filter);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public TEntity? Find(Guid id, string includes)
+        {
+            try
+            {
+                return _DbSet.Include(includes).SingleOrDefault(x => x.Id == id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public TEntity? Find(Expression<Func<TEntity, bool>> filter, string includes)
+        {
+            try
+            {
+                return _DbSet.Include(includes).SingleOrDefault(filter);
             }
             catch (Exception)
             {
@@ -74,19 +99,6 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public void Delete(TEntity entity)
-        {
-            try
-            {
-                _DbSet.Remove(entity);
-                _dbContext.SaveChanges();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         public IEnumerable<TEntity> All()
         {
             try
@@ -99,7 +111,7 @@ namespace Proj.Manager.Infrastructure.Repositories.SQLServer.Common
             }
         }
 
-        public IEnumerable<TEntity> All(Expression<Func<TEntity, bool>> filter = null)
+        public IEnumerable<TEntity> All(Expression<Func<TEntity, bool>> filter)
         {
             try
             {

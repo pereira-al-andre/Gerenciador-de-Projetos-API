@@ -50,11 +50,6 @@ namespace Proj.Manager.Infrastructure.Persistence.SQLServer
                     .HasColumnType("datetime")
                     .IsRequired();
 
-                e.Property(x => x.EndDate)
-                   .HasColumnName("EndDate")
-                   .HasColumnType("datetime")
-                   .IsRequired();
-
                 e.Property(x => x.FinishDate)
                    .HasColumnName("FinishDate")
                    .HasColumnType("datetime")
@@ -145,11 +140,6 @@ namespace Proj.Manager.Infrastructure.Persistence.SQLServer
 
                 e.Property(x => x.StartDate)
                     .HasColumnName("StartDate")
-                    .HasColumnType("datetime")
-                    .IsRequired();
-
-                e.Property(x => x.EndDate)
-                    .HasColumnName("EndDate")
                     .HasColumnType("datetime")
                     .IsRequired();
 

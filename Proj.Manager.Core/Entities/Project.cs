@@ -8,83 +8,95 @@ namespace Proj.Manager.Core.Entities
     {
 
         public Project()
-        {
-            
-        }
+        { }
 
         public Project(
-            Guid managerId,
+            Member member,
             Name name, 
-            Description description, 
-            DateTime startDate, 
-            DateTime endDate)
+            Description description)
         {
             this.Name = name;
             this.Description = description;
-            this.StartDate = startDate;
-            this.EndDate = endDate;
-            this.ManagerId = managerId;
-        }
-
-        public Project(
-            Guid managerId,
-            Name name,
-            Description description,
-            DateTime startDate)
-        {
-            this.Name = name;
-            this.Description = description;
-            this.StartDate = startDate;
-            this.EndDate = startDate.AddDays(15);
-            this.ManagerId = managerId;
+            this.ManagerId = member.Id;
         }
 
         public Guid ManagerId { get; set; }
-        public Name Name { get; set; }
-        public Description Description { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public DateTime? FinishDate { get; set; } = null;
+        public Name Name { get; set; } = null!;
+        public Description Description { get; set; } = null!;
+        public DateTime? StartDate { get; set; }
+        public DateTime? FinishDate { get; set; }
         public ProjectStatus Status { get; set; } = ProjectStatus.ToDo;
+
+        public bool IsCompleted => this.Status == ProjectStatus.Completed;
+        public bool IsTodo => this.Status == ProjectStatus.ToDo;
+        public bool IsOnGoing => this.Status == ProjectStatus.OnGoing;
+        public bool IsCanceled => this.Status == ProjectStatus.Canceled;
+        public bool IsDeleted => this.Status == ProjectStatus.Deleted;
 
         public List<Task> Tasks { get; set; } = new();
         public Member Manager { get; set; } = null!;
 
         public void Update(
             Name? name = null,
-            Description? description = null,
-            DateTime? endDate = null)
+            Description? description = null)
         {
+            if (!IsOnGoing || !IsTodo)
+                throw new Exception("Can not update the project. It got to be on 'ongoing' or 'todo' status.");
+
             if (name != null) this.Name = name;
             if (description != null) this.Description = description;
-            if (endDate != null) this.EndDate = endDate.Value;
         }
+        public void AddTask(
+            Name name,
+            Description description) {
 
-        public void AddTask(Task task) => this.Tasks.Add(task);
+            if (!IsOnGoing || !IsTodo) 
+                throw new Exception("Can not add task to the project. It got to be on 'ongoing' or 'todo' status.");
 
-        public void RemoveTask(Task task) => this.Tasks.Remove(task);
+            var task = new Task(this, name, description);
 
+            this.Tasks.Add(task);
+
+            if (Status == ProjectStatus.ToDo) Status = ProjectStatus.OnGoing;
+        }
+        public void RemoveTask(Guid taskId)
+        {
+            if (!IsOnGoing || !IsTodo)
+                throw new Exception("Can not remove task from the project. It got to be on 'ongoing' or 'todo' status.");
+
+            var task = Tasks.SingleOrDefault(x => x.Id == taskId) ?? throw new Exception("Task not found on this project.");
+
+            Tasks.Remove(task);
+
+            if (Tasks.Count == 0) Status = ProjectStatus.ToDo;
+        }
         public void Delete()
         {
-            this.Status = ProjectStatus.Deleted;
-            this.FinishDate = DateTime.Now;
-        }
+            if (IsDeleted || IsCompleted) return;
 
+            Tasks.ForEach(t => t.Delete());
+
+            Status = ProjectStatus.Deleted;
+            FinishDate = DateTime.Now;
+        }
         public void Finish()
         {
-            this.Status = ProjectStatus.Completed;
-            this.FinishDate = DateTime.Now;
-        }
+            if (!IsOnGoing) return;
 
+            if (Tasks.Any(x => x.Status == Enums.TaskStatus.ToDo || x.Status == Enums.TaskStatus.OnGoing))
+                throw new Exception("You can not finish this project. There are both 'on going' or 'to do' tasks on it.");
+
+            Status = ProjectStatus.Completed;
+            FinishDate = DateTime.Now;
+        }
         public void Cancel()
         {
-            this.Status = ProjectStatus.Canceled;
-            this.FinishDate = DateTime.Now;
-        }
+            if (IsCanceled || IsCompleted || IsDeleted) return;
 
-        public void Start()
-        {
-            this.Status = ProjectStatus.OnGoing;
+            Tasks.ForEach(t => t.Delete());
+
+            Status = ProjectStatus.Canceled;
+            FinishDate = DateTime.Now;
         }
     }
 }

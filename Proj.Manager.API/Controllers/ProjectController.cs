@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proj.Manager.Application.DTO.RequestModels.Project;
-using Proj.Manager.Application.DTO.ViewModels;
+using Proj.Manager.Application.DTO.RequestModels.Task;
 using Proj.Manager.Application.Services.Interfaces;
-using Proj.Manager.Core.Entities;
-using Proj.Manager.Core.ValueObjects;
 
 namespace Proj.Manager.API.Controllers
 {
@@ -12,13 +10,10 @@ namespace Proj.Manager.API.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _service;
-        private readonly ITaskService _taskService;
         public ProjectController(
-            IProjectService projectService, 
-            ITaskService taskService)
+            IProjectService projectService)
         {
             _service = projectService;
-            _taskService = taskService;
         }
 
         [HttpGet]
@@ -27,7 +22,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                return Ok(ProjectViewModel.ProjectsList(_service.All().ToList()));
+                return Ok(_service.All());
             }
             catch (Exception ex)
             {
@@ -36,12 +31,12 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/find")]
-        public IActionResult Find(Guid id)
+        [Route("{projectId}/find")]
+        public IActionResult Find(Guid projectId)
         {
             try
             {
-                return Ok(new ProjectViewModel(_service.Find(id)));
+                return Ok(_service.Find(projectId));
             }
             catch (Exception ex)
             {
@@ -50,12 +45,12 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/tasks")]
-        public IActionResult ListProjectTasks(Guid id)
+        [Route("{projectId}/tasks")]
+        public IActionResult ListTasks(Guid projectId)
         {
             try
             {
-                return Ok(TaskViewModel.TasksList(_taskService.ListProjectTasks(id).ToList()));
+                return Ok(_service.ListProjectTasks(projectId));
             }
             catch (Exception ex)
             {
@@ -67,11 +62,9 @@ namespace Proj.Manager.API.Controllers
         [Route("create")]
         public IActionResult Create(CreateProjectRequest request)
         {
-            var project = new Project(request.ManagerId, new Name(request.Name), new Description(request.Description), request.StartDate);
-
             try
             {
-                return Ok(new ProjectViewModel(_service.Create(project)));
+                return Ok(_service.Create(request));
             }
             catch (Exception ex)
             {
@@ -80,12 +73,13 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}/delete")]
-        public IActionResult Delete(Guid id)
+        [Route("{projectId}/delete")]
+        public IActionResult Delete(Guid projectId)
         {
             try
             {
-                _service.Delete(id);
+                _service.Delete(projectId);
+
                 return NoContent();
             }
             catch (Exception ex)
@@ -95,42 +89,12 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/complete")]
-        public IActionResult Complete(Guid id)
+        [Route("{projectId}/cancel")]
+        public IActionResult Cancel(Guid projectId)
         {
             try
             {
-                _service.Complete(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return Problem($"We encountered an issue while attempting to complete: {ex.Message}");
-            }
-        }
-
-        [HttpPut]
-        [Route("{id}/start")]
-        public IActionResult Start(Guid id)
-        {
-            try
-            {
-                _service.Start(id);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return Problem($"We encountered an issue while attempting to start: {ex.Message}");
-            }
-        }
-
-        [HttpPut]
-        [Route("{id}/cancel")]
-        public IActionResult Cancel(Guid id)
-        {
-            try
-            {
-                _service.Cancel(id);
+                _service.Cancel(projectId);
                 return NoContent();
             }
             catch (Exception ex)
@@ -145,10 +109,8 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                var project = _service.Find(request.Id);
-                project.Update(new Name(request.Name), new Description(request.Description), request.EndDate);
+                _service.Update(request);
 
-                _service.Update(project);
                 return NoContent();
             }
             catch (Exception ex)
@@ -157,13 +119,29 @@ namespace Proj.Manager.API.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("{id}/remove/task")]
-        public IActionResult RemoveTask(Guid idTask, Guid idProject)
+        [HttpPost]
+        [Route("{projectId}/add/task")]
+        public IActionResult AddTask(CreateTaskRequest request, Guid projectId)
         {
             try
             {
-                _service.RemoveTask(idTask, idProject);
+                _service.AddTask(request, projectId);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Problem($"We encountered an issue while attempting to remove the task: {ex.Message}");
+            }
+        }
+
+        [HttpDelete]
+        [Route("{projectId}/remove/task/{taskId}")]
+        public IActionResult RemoveTask(Guid taskId, Guid projectId)
+        {
+            try
+            {
+                _service.RemoveTask(taskId, projectId);
 
                 return NoContent();
             }

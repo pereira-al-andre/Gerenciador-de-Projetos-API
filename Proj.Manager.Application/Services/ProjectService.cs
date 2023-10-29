@@ -1,7 +1,12 @@
-﻿using Proj.Manager.Application.Exceptions;
+﻿using Proj.Manager.Application.DTO.RequestModels.Project;
+using Proj.Manager.Application.DTO.RequestModels.Task;
+using Proj.Manager.Application.DTO.ViewModels;
+using Proj.Manager.Application.Exceptions;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
+using Proj.Manager.Core.ValueObjects;
+using System.Reflection;
 
 namespace Proj.Manager.Application.Services
 {
@@ -9,19 +14,25 @@ namespace Proj.Manager.Application.Services
     {
         private readonly IProjectRepository _repository;
         private readonly ITaskRepository _taskRepository;
+        private readonly IMemberRepositoy _memberRepository;
         public ProjectService(
             IProjectRepository projectRepository,
-            ITaskRepository taskRepository)
+            ITaskRepository taskRepository,
+            IMemberRepositoy memberRepository)
         {
             _repository = projectRepository;
             _taskRepository = taskRepository;
-
+            _memberRepository = memberRepository;
         }
 
-        public void Update(Project project)
+        public void Update(UpdateProjectRequest request)
         {
             try
             {
+                var project = _repository.Find(request.Id) ?? throw new Exception("Project not found.");
+
+                project.Update(new Name(request.Name), new Description(request.Description));
+
                 _repository.Update(project);
             }
             catch (Exception)
@@ -29,32 +40,24 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
-        public Project Find(Guid id)
+        public ProjectViewModel Find(Guid id)
         {
             try
             {
-                var project = _repository.Find(id);
+                var project = _repository.Find(id) ?? throw new ProjectNotFoundException("Project not found.");
 
-                if (project == null)
-                    throw new ProjectNotFoundException("Project não encontrado.");
-
-                return project;
+                return new ProjectViewModel(project);
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
         public void Cancel(Guid id)
         {
             try
             {
-                var model = _repository.Find(id);
-
-                if (model == null)
-                    throw new ProjectNotFoundException("Project não encontrado");
+                var model = _repository.Find(id, "Tasks") ?? throw new ProjectNotFoundException("Project not found");
 
                 model.Cancel();
 
@@ -65,27 +68,29 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
-        public Project Create(Project project)
+        public ProjectViewModel Create(CreateProjectRequest request)
         {
             try
             {
-                return _repository.Create(project);
+                var manager = _memberRepository.Find(request.ManagerId) ?? throw new Exception("Member not found.");
+
+                var project = new Project(
+                    manager,
+                    new Name(request.Name),
+                    new Description(request.Description));
+
+                return new ProjectViewModel(_repository.Create(project));
             }
             catch (Exception)
             {
                 throw;
             }            
         }
-
         public void Delete(Guid id)
         {
             try
             {
-                var model = _repository.Find(id);
-
-                if (model == null)
-                    throw new ProjectNotFoundException("Project não encontrado");
+                var model = _repository.Find(id, "Tasks") ?? throw new ProjectNotFoundException("Project not found");                
 
                 model.Delete();
 
@@ -96,15 +101,11 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
         public void Complete(Guid id)
         {
             try
             {
-                var model = _repository.Find(id);
-
-                if (model == null)
-                    throw new ProjectNotFoundException("Project não encontrado");
+                var model = _repository.Find(id) ?? throw new ProjectNotFoundException("Project not found");
 
                 model.Finish();
 
@@ -115,67 +116,72 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-
-        public IEnumerable<Project> All()
+        public List<ProjectViewModel> All()
         {
             try
             {
-                return _repository.All();
+                var projects = _repository.All();
+
+                return ProjectViewModel.ProjectsList(projects.ToList());
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
-        public IEnumerable<Project> ListMemberProjects(Guid memberId)
+        public List<ProjectViewModel> ListMemberProjects(Guid memberId)
         {
             try
             {
-                return _repository.All(x => x.ManagerId == memberId);
+                var projects = _repository.All(x => x.ManagerId == memberId);
+
+                return ProjectViewModel.ProjectsList(projects.ToList());
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
-        public void Start(Guid id)
+        public void AddTask(CreateTaskRequest request, Guid projectId)
         {
             try
             {
-                var model = _repository.Find(id);
+                var project = _repository.Find(projectId) ?? throw new Exception("Project not found.");
 
-                if (model == null)
-                    throw new ProjectNotFoundException("Project não encontrado");
+                project.AddTask(
+                    new Name(request.Name),
+                    new Description(request.Description));
 
-                model.Start();
-
-                _repository.Update(model);
+                _repository.Update(project);
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
         public void RemoveTask(Guid taskId, Guid projectId)
         {
             try
             {
-                var project = _repository.Find(projectId);
+                var project = _repository.Find(projectId, "Tasks") ?? throw new ProjectNotFoundException("Project not found");
 
-                if (project == null)
-                    throw new ProjectNotFoundException("Project não encontrado");
-
-                var task = _taskRepository.Find(taskId);
-
-                if (task == null)
-                    throw new TaskNotFoundException("Task não encontrado");
-
-                project.RemoveTask(task);
+                project.RemoveTask(taskId);
 
                 _repository.Update(project);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<TaskViewModel> ListProjectTasks(Guid projectId)
+        {
+            try
+            {
+                var project = _repository.Find(projectId, "Tasks") ?? throw new ProjectNotFoundException("Project not found.");
+
+                return TaskViewModel.TasksList(project.Tasks);
             }
             catch (Exception)
             {

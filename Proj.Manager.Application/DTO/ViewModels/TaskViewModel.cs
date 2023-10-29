@@ -29,10 +29,9 @@ namespace Proj.Manager.Application.DTO.ViewModels
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public DateTime? FinishDate { get; set; } = null;
+        public string Description { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? FinishDate { get; set; }
         public Core.Enums.TaskStatus Status { get; set; } = Core.Enums.TaskStatus.ToDo;
         public string StatusDescription { get { return this.Status.GetDescription(); } }
         public List<TaskMember> Members { get; set; } = new();
@@ -45,7 +44,6 @@ namespace Proj.Manager.Application.DTO.ViewModels
             this.Name = task.Name.Value;
             this.Description = task.Description.Value;
             this.StartDate = task.StartDate;
-            this.EndDate = task.EndDate;
             this.FinishDate = task.FinishDate;
             this.Status = task.Status;
 
