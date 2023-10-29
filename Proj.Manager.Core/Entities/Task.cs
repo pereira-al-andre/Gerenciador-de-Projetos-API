@@ -33,7 +33,6 @@ namespace Proj.Manager.Core.Entities
 
         public bool IsToDo => Status == Enums.TaskStatus.ToDo;
         public bool IsOnGoing => Status == Enums.TaskStatus.OnGoing;
-        public bool IsCanceled => Status == Enums.TaskStatus.Canceled;
         public bool IsCompleted => Status == Enums.TaskStatus.Completed;
         public bool IsDeleted => Status == Enums.TaskStatus.Deleted;
 
@@ -41,9 +40,6 @@ namespace Proj.Manager.Core.Entities
            Name? name = null,
            Description? description = null)
         {
-
-            if (IsCanceled)
-                throw new Exception("You can not update a canceled task.");
 
             if (IsCompleted)
                 throw new Exception("You can not update a completed task.");
@@ -56,9 +52,6 @@ namespace Proj.Manager.Core.Entities
         }
         public void AddMember(Member member)
         {
-            if (IsCanceled)
-                throw new Exception("You can not add members to a canceled task.");
-
             if (IsCompleted)
                 throw new Exception("You can not add members to a completed task.");
 
@@ -69,9 +62,6 @@ namespace Proj.Manager.Core.Entities
         }
         public void RemoveMember(Member member)
         {
-            if (IsCanceled)
-                throw new Exception("You can not remove members to a canceled task.");
-
             if (IsCompleted)
                 throw new Exception("You can not remove members to a completed task.");
 
@@ -94,13 +84,6 @@ namespace Proj.Manager.Core.Entities
             if (!IsOnGoing) return;
 
             this.Status = Enums.TaskStatus.Completed;
-            this.FinishDate = DateTime.Now;
-        }
-        public void Cancel()
-        {
-            if (IsCanceled || IsCompleted || IsDeleted) return;
-
-            this.Status = Enums.TaskStatus.Canceled;
             this.FinishDate = DateTime.Now;
         }
         public void Start()

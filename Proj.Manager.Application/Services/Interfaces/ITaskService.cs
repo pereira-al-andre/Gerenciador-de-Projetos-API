@@ -12,9 +12,9 @@ namespace Proj.Manager.Application.Services.Interfaces
         public TaskViewModel Find(Guid id);
         public void Update(UpdateTaskRequest task);
         public void Delete(Guid id);
-        public void Cancel(Guid id);
         public void Complete(Guid id);
         public void Start(Guid id);
         public void AddMembers(Guid[] members, Guid taskId);
+        public void RemoveMember(Guid memberId, Guid taskId);
     }
 }

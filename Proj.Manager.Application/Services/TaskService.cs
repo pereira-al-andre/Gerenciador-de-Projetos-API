@@ -93,13 +93,14 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-        public void Update(UpdateTaskRequest request)
+        public void RemoveMember(Guid memberId, Guid taskId)
         {
             try
             {
-                var task = _repository.Find(request.Id) ?? throw new Exception("Task not found.");
+                var task = _repository.Find(taskId) ?? throw new TaskNotFoundException("Task not found.");
+                var memeber = _memberRepositoy.Find(memberId) ?? throw new MemberNotFoundException("Member not found.");
 
-                task.Update(new Name(request.Name), new Description(request.Description));
+                task.RemoveMember(memeber);
 
                 _repository.Update(task);
             }
@@ -108,12 +109,13 @@ namespace Proj.Manager.Application.Services
                 throw;
             }
         }
-        public void Cancel(Guid id)
+        public void Update(UpdateTaskRequest request)
         {
             try
             {
-                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task not found.");
-                task.Cancel();
+                var task = _repository.Find(request.Id) ?? throw new Exception("Task not found.");
+
+                task.Update(new Name(request.Name), new Description(request.Description));
 
                 _repository.Update(task);
             }

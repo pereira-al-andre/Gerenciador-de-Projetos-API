@@ -13,23 +13,18 @@ namespace Proj.Manager.Core.Entities
         public Project(
             Member member,
             Name name, 
-            Description description, 
-            DateTime startDate, 
-            DateTime endDate)
+            Description description)
         {
             this.Name = name;
             this.Description = description;
-            this.StartDate = startDate;
-            this.EndDate = endDate;
             this.ManagerId = member.Id;
         }
 
         public Guid ManagerId { get; set; }
         public Name Name { get; set; } = null!;
         public Description Description { get; set; } = null!;
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public DateTime? FinishDate { get; set; } = null;
+        public DateTime? StartDate { get; set; }
+        public DateTime? FinishDate { get; set; }
         public ProjectStatus Status { get; set; } = ProjectStatus.ToDo;
 
         public bool IsCompleted => this.Status == ProjectStatus.Completed;
@@ -43,32 +38,30 @@ namespace Proj.Manager.Core.Entities
 
         public void Update(
             Name? name = null,
-            Description? description = null,
-            DateTime? endDate = null)
+            Description? description = null)
         {
-            if (IsOnGoing || IsTodo)
+            if (!IsOnGoing || !IsTodo)
                 throw new Exception("Can not update the project. It got to be on 'ongoing' or 'todo' status.");
 
             if (name != null) this.Name = name;
             if (description != null) this.Description = description;
-            if (endDate != null) this.EndDate = endDate.Value;
         }
         public void AddTask(
             Name name,
             Description description) {
 
-            if (IsOnGoing || IsTodo) 
+            if (!IsOnGoing || !IsTodo) 
                 throw new Exception("Can not add task to the project. It got to be on 'ongoing' or 'todo' status.");
 
             var task = new Task(this, name, description);
 
             this.Tasks.Add(task);
 
-            Status = ProjectStatus.OnGoing;
+            if (Status == ProjectStatus.ToDo) Status = ProjectStatus.OnGoing;
         }
         public void RemoveTask(Guid taskId)
         {
-            if (IsOnGoing || IsTodo)
+            if (!IsOnGoing || !IsTodo)
                 throw new Exception("Can not remove task from the project. It got to be on 'ongoing' or 'todo' status.");
 
             var task = Tasks.SingleOrDefault(x => x.Id == taskId) ?? throw new Exception("Task not found on this project.");
@@ -81,7 +74,7 @@ namespace Proj.Manager.Core.Entities
         {
             if (IsDeleted || IsCompleted) return;
 
-            Tasks.ForEach(t => t.Cancel());
+            Tasks.ForEach(t => t.Delete());
 
             Status = ProjectStatus.Deleted;
             FinishDate = DateTime.Now;
@@ -100,7 +93,7 @@ namespace Proj.Manager.Core.Entities
         {
             if (IsCanceled || IsCompleted || IsDeleted) return;
 
-            Tasks.ForEach(t => t.Cancel());
+            Tasks.ForEach(t => t.Delete());
 
             Status = ProjectStatus.Canceled;
             FinishDate = DateTime.Now;

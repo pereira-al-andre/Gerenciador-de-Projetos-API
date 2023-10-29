@@ -10,11 +10,9 @@ namespace Proj.Manager.API.Controllers
     {
 
         private readonly ITaskService _service;
-        private readonly IMemberService _memberService;
-        public TaskController(ITaskService taskService, IMemberService memberService)
+        public TaskController(ITaskService taskService)
         {
             _service = taskService;
-            _memberService = memberService;
         }
 
         [HttpGet]
@@ -49,7 +47,7 @@ namespace Proj.Manager.API.Controllers
 
         [HttpGet]
         [Route("{taskId}/members")]
-        public IActionResult ListTaskMembers(Guid taskId)
+        public IActionResult ListMembers(Guid taskId)
         {
             try
             {
@@ -74,40 +72,6 @@ namespace Proj.Manager.API.Controllers
             catch (Exception ex)
             {
                 return Problem($"We encountered an issue while attempting to update: {ex.Message}");
-            }
-
-        }
-
-        [HttpDelete]
-        [Route("{id}/delete")]
-        public IActionResult Delete(Guid id)
-        {
-            try
-            {               
-                _service.Delete(id);
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return Problem($"We encountered an issue while attempting to delete: {ex.Message}");
-            }
-         
-        }
-
-        [HttpPut]
-        [Route("{id}/cancel")]
-        public IActionResult Cancel(Guid id)
-        {
-            try
-            {
-                _service.Cancel(id);
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return Problem($"We encountered an issue while attempting to cancel: {ex.Message}");
             }
 
         }
@@ -161,6 +125,23 @@ namespace Proj.Manager.API.Controllers
                 return Problem($"We encountered an issue while attempting to add a member: {ex.Message}");
             }
             
+        }
+
+        [HttpPost]
+        [Route("{taskId}/remove/member")]
+        public IActionResult RemoveMember(Guid memberId, Guid taskId)
+        {
+            try
+            {
+                _service.RemoveMember(memberId, taskId);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Problem($"We encountered an issue while attempting to remove a member: {ex.Message}");
+            }
+
         }
     }
 }

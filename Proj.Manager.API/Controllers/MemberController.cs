@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proj.Manager.Application.DTO.RequestModels.Member;
-using Proj.Manager.Application.DTO.ViewModels;
 using Proj.Manager.Application.Services.Interfaces;
-using Proj.Manager.Core.Entities;
-using Proj.Manager.Core.ValueObjects;
 
 namespace Proj.Manager.API.Controllers
 {
@@ -12,17 +9,10 @@ namespace Proj.Manager.API.Controllers
     public class MemberController : ControllerBase
     {
         private readonly IMemberService _service;
-        private readonly ITaskService _taskService;
-        private readonly IProjectService _projectService;
         public MemberController(
-            IMemberService memberService,
-            ITaskService taskService,
-            IProjectService projectService)
+            IMemberService memberService)
         {
             _service = memberService;
-            _taskService = taskService;
-            _projectService = projectService;
-
         }
 
         [HttpGet]
@@ -31,7 +21,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                return Ok(MemberViewModel.MembersList(_service.All().ToList()));
+                return Ok(_service.All());
             }
             catch (Exception ex)
             {
@@ -46,7 +36,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                return Ok(new MemberViewModel(_service.Find(id)));
+                return Ok(_service.Find(id));
             }
             catch (Exception ex)
             {
@@ -55,12 +45,12 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/tasks")]
-        public IActionResult ListMemberTasks(Guid id)
+        [Route("{memberId}/tasks")]
+        public IActionResult ListTasks(Guid memberId)
         {
             try
             {
-                return Ok(_taskService.ListTaskMembers(id));
+                return Ok(_service.ListMemberTasks(memberId));
             }
             catch (Exception ex)
             {
@@ -70,12 +60,12 @@ namespace Proj.Manager.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/projects")]
-        public IActionResult ListMemberProjects(Guid id)
+        [Route("{memberId}/projects")]
+        public IActionResult ListProjects(Guid memberId)
         {
             try
             {
-                return Ok(_projectService.ListMemberProjects(id));
+                return Ok(_service.ListMemberProjects(memberId));
             }
             catch (Exception ex)
             {
@@ -87,15 +77,9 @@ namespace Proj.Manager.API.Controllers
         [Route("create")]
         public IActionResult Create(CreateMemberRequest request)
         {
-            var member = new Member(
-                new Name(request.Name), 
-                new Email(request.Email), 
-                new Password(request.Password), 
-                request.Role);
-
             try
             {
-                return Ok(new MemberViewModel(_service.Create(member)));
+                return Ok(_service.Create(request));
             }
             catch (Exception ex)
             {
@@ -109,11 +93,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                var member = _service.Find(request.Id);
-
-                member.Update(new Name(request.Name), new Email(request.Email));
-
-                _service.Update(member);
+                _service.Update(request);
 
                 return NoContent();
             }
@@ -129,11 +109,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                var member = _service.Find(request.Id);
-
-                member.ChangeRole(request.Role);
-
-                _service.UpdateRole(member);
+                _service.UpdateRole(request);
 
                 return NoContent();
             }
@@ -149,11 +125,7 @@ namespace Proj.Manager.API.Controllers
         {
             try
             {
-                var member = _service.Find(request.Id);
-
-                member.ChangePassword(new Password(request.NewPassword));
-
-                _service.UpdatePassword(member);
+                _service.UpdatePassword(request);
 
                 return NoContent();
             }

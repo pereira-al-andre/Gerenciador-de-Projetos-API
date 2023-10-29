@@ -12,7 +12,7 @@ namespace Proj.Manager.Application.DTO.RequestModels.Member
 
         [AllowNull]
         [MaxLength(50)]
-        public string Name { get; set; } = null;
+        public string? Name { get; set; } = null;
 
         [AllowNull]
         [MaxLength(255)]

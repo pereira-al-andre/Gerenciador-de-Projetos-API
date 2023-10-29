@@ -13,10 +13,7 @@ namespace Proj.Manager.Core.Enums
         [Description("Completed")]
         Completed = 2,
 
-        [Description("Canceled")]
-        Canceled = 3,
-
         [Description("Deleted")]
-        Deleted = 4
+        Deleted = 3
     }
 }
