@@ -11,14 +11,11 @@ namespace Proj.Manager.Application.Services
 {
     public class MemberService : IMemberService
     {
-        private readonly IMemberRepositoy _repository;
-        private readonly ITaskRepository _taskRepository;
+        private readonly IMemberRepository _repository;
         public MemberService(
-            IMemberRepositoy memberRepository,
-            ITaskRepository taskRepository)
+            IMemberRepository memberRepository)
         {
             _repository = memberRepository;
-            _taskRepository = taskRepository;
         }
 
         public void UpdateRole(UpdateRoleRequest request)
@@ -107,20 +104,6 @@ namespace Proj.Manager.Application.Services
             try
             {
                 return MemberViewModel.MembersList(_repository.All().ToList());
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public List<MemberViewModel> ListTaskMembers(Guid taskId)
-        {
-            try
-            {
-                var task = _taskRepository.Find(taskId) ?? throw new TaskNotFoundException("Task not found");
-
-                return MemberViewModel.MembersList(task.Members);
             }
             catch (Exception)
             {

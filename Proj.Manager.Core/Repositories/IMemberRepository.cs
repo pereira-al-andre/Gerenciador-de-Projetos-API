@@ -3,6 +3,6 @@ using Proj.Manager.Core.Repositories.Common;
 
 namespace Proj.Manager.Core.Repositories
 {
-    public interface IMemberRepositoy : IRepository<Member>, IDeletable<Member>
+    public interface IMemberRepository : IRepository<Member>, IDeletable<Member>
     { }
 }

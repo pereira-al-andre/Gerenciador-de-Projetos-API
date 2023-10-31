@@ -11,7 +11,6 @@ namespace Proj.Manager.Application.Services.Interfaces
         public List<ProjectViewModel> ListMemberProjects(Guid memberId);
         public MemberViewModel Find(Guid id);
         public MemberViewModel Create(CreateMemberRequest request);
-        public List<MemberViewModel> ListTaskMembers(Guid taskId);
         public void Update(UpdateMemberRequest request);
         public void UpdateRole(UpdateRoleRequest member);
         public void UpdatePassword(UpdatePasswordRequest member);

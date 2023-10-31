@@ -14,10 +14,10 @@ namespace Proj.Manager.Application.Services
     public class TaskService : ITaskService
     {
         private readonly ITaskRepository _repository;
-        private readonly IMemberRepositoy _memberRepositoy;
+        private readonly IMemberRepository _memberRepositoy;
         public TaskService(
             ITaskRepository taskRepository, 
-            IMemberRepositoy memberRepositoy)
+            IMemberRepository memberRepositoy)
         {
             _repository = taskRepository;
             _memberRepositoy = memberRepositoy;
