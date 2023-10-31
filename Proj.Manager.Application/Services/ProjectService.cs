@@ -14,11 +14,11 @@ namespace Proj.Manager.Application.Services
     {
         private readonly IProjectRepository _repository;
         private readonly ITaskRepository _taskRepository;
-        private readonly IMemberRepositoy _memberRepository;
+        private readonly IMemberRepository _memberRepository;
         public ProjectService(
             IProjectRepository projectRepository,
             ITaskRepository taskRepository,
-            IMemberRepositoy memberRepository)
+            IMemberRepository memberRepository)
         {
             _repository = projectRepository;
             _taskRepository = taskRepository;

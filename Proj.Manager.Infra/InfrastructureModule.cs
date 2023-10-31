@@ -18,7 +18,7 @@ namespace Proj.Manager.Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(Repository<>), typeof(Repository<>));
-            services.AddScoped<IMemberRepositoy, MemberRepository>();
+            services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<ITaskRepository, TaskRepository>();
 

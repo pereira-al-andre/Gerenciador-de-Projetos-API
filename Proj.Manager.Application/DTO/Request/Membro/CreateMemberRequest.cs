@@ -5,6 +5,14 @@ namespace Proj.Manager.Application.DTO.RequestModels.Member
 {
     public class CreateMemberRequest
     {
+        public CreateMemberRequest(string name, string email, string password, Role role)
+        {
+            Name = name;
+            Email = email; 
+            Password = password;
+            Role = role;
+        }
+
         [Required]
         public string Name { get; set; } = null!;
 

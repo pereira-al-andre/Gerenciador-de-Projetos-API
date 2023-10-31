@@ -7,7 +7,7 @@ using Proj.Manager.Infrastructure.Repositories.SQLServer.Common;
 
 namespace Proj.Manager.Infrastructure.Repositories.SQLServer
 {
-    public class MemberRepository : Repository<Member>, IMemberRepositoy
+    public class MemberRepository : Repository<Member>, IMemberRepository
     {
         public MemberRepository(SqlServerDBContext context) : base(context)
         { }
