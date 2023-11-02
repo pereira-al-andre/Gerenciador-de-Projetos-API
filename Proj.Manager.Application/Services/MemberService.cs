@@ -54,7 +54,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var member = _repository.Find(request.Id) ?? throw new Exception("Member not found");
+                var member = _repository.Find(request.Id) ?? throw new MemberNotFoundException("Member not found");
 
                 if (request.Name != null) member.Update(new Name(request.Name));
                 if (request.Email != null) member.Update(null, new Email(request.Email));

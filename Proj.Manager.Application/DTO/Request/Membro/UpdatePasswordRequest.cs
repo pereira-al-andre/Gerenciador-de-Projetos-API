@@ -4,6 +4,13 @@ namespace Proj.Manager.Application.DTO.RequestModels.Member
 {
     public class UpdatePasswordRequest
     {
+        public UpdatePasswordRequest(Guid id, string currentPassword, string newPassword)
+        {
+            Id = id;
+            CurrentPassword = currentPassword;
+            NewPassword = newPassword;
+        }
+
         [Required]
         public Guid Id { get; set; }
 
