@@ -18,5 +18,12 @@ namespace Proj.Manager.Application.DTO.RequestModels.Member
         [MaxLength(255)]
         [DataType(DataType.EmailAddress)]
         public string? Email { get; set; } = null;
+
+        public UpdateMemberRequest(Guid id, string? name, string? email)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+        }
     }
 }

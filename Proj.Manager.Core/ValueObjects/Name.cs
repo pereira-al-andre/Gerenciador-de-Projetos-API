@@ -15,7 +15,7 @@ namespace Proj.Manager.Core.ValueObjects
 
         private void Validate(string value)
         {
-            if (value.Length == 0) throw new InvalidNameException("Invalid name passed.");
+            if (value.Length == 0) throw new ArgumentException("Invalid name passed.");
         }
     }
 }

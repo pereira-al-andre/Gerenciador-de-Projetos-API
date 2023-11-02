@@ -11,8 +11,18 @@ using Proj.Manager.Core.Repositories;
 using Proj.Manager.Core.ValueObjects;
 using Shouldly;
 
-namespace Proj.Manager.Tests
+namespace Proj.Manager.Tests.MemberTests
 {
+    public class CreateTestModel : TheoryData<CreateMemberRequest>
+    {
+        public CreateTestModel()
+        {
+            Add(new CreateMemberRequest("", "", "", Role.Developer));
+            Add(new CreateMemberRequest("Name", "", "", Role.Developer));
+            Add(new CreateMemberRequest("Name", "mail@mail", "", Role.Developer));
+            Add(new CreateMemberRequest("", "mail@mail", "password", Role.Developer));
+        }
+    }
     public class CreateUserTest
     {
         private readonly IMemberRepository _memberRepositoy;
@@ -44,7 +54,7 @@ namespace Proj.Manager.Tests
 
         [Fact]
 
-        public void ValidDeveloperMember_CreateCalled_ReturnValidMemberViewModel()
+        public void Create_Should_ReturnMemberViewModel_WhenValidDeveloperMember()
         {
             var member = _memberService.Create(_validMemberRequest);
 
@@ -55,20 +65,11 @@ namespace Proj.Manager.Tests
             _memberRepositoyMock.Verify(m => m.Create(It.IsAny<Member>()), Times.Once);
         }
 
-        [Fact]
-        public void InvalidEmailDeveloperMember_CreateCalled_ReturnException()
+        [Theory]
+        [ClassData(typeof(CreateTestModel))]
+        public void InvalidEmailDeveloperMember_CreateCalled_ReturnException_Two(CreateMemberRequest invalidRequest)
         {
-            var invalidMember = new CreateMemberRequest("Invalid Member", "", "senha", Role.Developer);
-
-            Should.Throw(() => _memberService.Create(invalidMember), typeof(InvalidEmailException), "Invalid email");
-        }
-
-        [Fact]
-        public void InvalidPasswordDeveloperMember_CreateCalled_ReturnException()
-        {
-            var invalidMember = new CreateMemberRequest("Invalid Member", "email@mail.com", "", Role.Developer);
-
-            Should.Throw(() => _memberService.Create(invalidMember), typeof(InvalidPasswordException), "Invalid password");
+            Should.Throw(() => _memberService.Create(invalidRequest), typeof(ArgumentException), "Invalid argument passed");
         }
     }
 }

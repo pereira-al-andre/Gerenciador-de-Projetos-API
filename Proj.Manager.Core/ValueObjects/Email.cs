@@ -15,7 +15,7 @@ namespace Proj.Manager.Core.ValueObjects
 
         private void Validate(string value)
         {
-            if (value.Length == 0) throw new InvalidEmailException("Invalid email passed.");
+            if (value.Length == 0) throw new ArgumentException("Invalid email passed.");
         }
     }
 }
