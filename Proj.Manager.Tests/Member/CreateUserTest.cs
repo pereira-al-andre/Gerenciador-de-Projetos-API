@@ -2,11 +2,13 @@ using AutoFixture;
 using Moq;
 using Proj.Manager.Application.DTO.RequestModels.Member;
 using Proj.Manager.Application.DTO.ViewModels;
+using Proj.Manager.Application.Exceptions.Common;
 using Proj.Manager.Application.Services;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Enums;
 using Proj.Manager.Core.Exceptions;
+using Proj.Manager.Core.Exceptions.Common;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Core.ValueObjects;
 using Shouldly;
@@ -66,9 +68,7 @@ namespace Proj.Manager.Tests
         [Fact]
         public void InvalidPasswordDeveloperMember_CreateCalled_ReturnException()
         {
-            var invalidMember = new CreateMemberRequest("Invalid Member", "email@mail.com", "", Role.Developer);
-
-            Should.Throw(() => _memberService.Create(invalidMember), typeof(InvalidPasswordException), "Invalid password");
+            Should.Throw(() => _memberService.Create(invalidRequest), typeof(DomainLayerException), "Invalid argument passed");
         }
     }
 }

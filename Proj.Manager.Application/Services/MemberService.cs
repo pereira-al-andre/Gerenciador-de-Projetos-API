@@ -1,6 +1,8 @@
 ﻿using Proj.Manager.Application.DTO.RequestModels.Member;
 using Proj.Manager.Application.DTO.ViewModels;
+using Proj.Manager.Application.Enums;
 using Proj.Manager.Application.Exceptions;
+using Proj.Manager.Application.Exceptions.Common;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
@@ -22,8 +24,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var member = _repository.Find(request.Id) ?? throw new Exception("Member not found");
-
+                var member = _repository.Find(request.Id) ?? throw new ApplicationLayerException(ApplicationExceptionType.MemberNotFound);
                 member.ChangeRole(request.Role);
 
                 _repository.Update(member);
@@ -38,8 +39,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var member = _repository.Find(request.Id) ?? throw new Exception("Member not found");
-
+                var member = _repository.Find(request.Id) ?? throw new ApplicationLayerException(ApplicationExceptionType.MemberNotFound);
                 member.ChangePassword(new Password(request.NewPassword));
 
                 _repository.Update(member);
@@ -54,7 +54,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var member = _repository.Find(request.Id) ?? throw new Exception("Member not found");
+                var member = _repository.Find(request.Id) ?? throw new ApplicationLayerException(ApplicationExceptionType.MemberNotFound);
 
                 if (request.Name != null) member.Update(new Name(request.Name));
                 if (request.Email != null) member.Update(null, new Email(request.Email));
@@ -71,7 +71,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var member = _repository.Find(id) ?? throw new MemberNotFoundException("Member not found.");
+                var member = _repository.Find(id) ?? throw new ApplicationLayerException(ApplicationExceptionType.MemberNotFound);
 
                 return new MemberViewModel(member);
             }
@@ -115,7 +115,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var member = _repository.Find(memberId, "Tasks") ?? throw new MemberNotFoundException("Member not found.");
+                var member = _repository.Find(memberId, "Tasks") ?? throw new ApplicationLayerException(ApplicationExceptionType.MemberNotFound);
 
                 return TaskViewModel.TasksList(member.Tasks);
             }
@@ -129,7 +129,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var member = _repository.Find(memberId, "Projects") ?? throw new MemberNotFoundException("Member not found.");
+                var member = _repository.Find(memberId, "Projects") ?? throw new ApplicationLayerException(ApplicationExceptionType.MemberNotFound);
 
                 return ProjectViewModel.ProjectsList(member.Projects);
             }
