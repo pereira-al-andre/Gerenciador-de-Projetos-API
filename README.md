@@ -23,12 +23,12 @@ I chose to initially use MS SQL Server. To interact with the database code-first
 - Services and their Abstractions
 - Data access via EF Core to SQL Server
 - Basic Exception handling
-
+- Unit tests
+  
 ### Next Implementations
-- Exception handling
 - Rich domain models
 - Authentication and Authorization
-- Adding tests
+
 
 
 

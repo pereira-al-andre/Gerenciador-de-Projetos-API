@@ -5,6 +5,12 @@ namespace Proj.Manager.Application.DTO.RequestModels.Member
 {
     public class UpdateRoleRequest
     {
+        public UpdateRoleRequest(Guid id, Role role)
+        {
+            Id = id;
+            Role = role;
+        }
+
         [Required]
         public Guid Id { get; set; }
 
