@@ -13,6 +13,7 @@ namespace Proj.Manager.Core.ValueObjects
             Validate(value);
 
             Value = value;
+
         }
 
         private void Validate(string value)
