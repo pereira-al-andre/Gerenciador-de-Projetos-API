@@ -1,4 +1,5 @@
 ﻿using Proj.Manager.Core.Enums;
+using Proj.Manager.Core.Exceptions.Common;
 using Proj.Manager.Core.Primitives;
 using Proj.Manager.Core.ValueObjects;
 
@@ -42,10 +43,10 @@ namespace Proj.Manager.Core.Entities
         {
 
             if (IsCompleted)
-                throw new Exception("You can not update a completed task.");
+                throw new DomainLayerException(DomainExceptionType.InvalidTaskStatus, "You can not update a completed task.");
 
             if (IsDeleted)
-                throw new Exception("You can not update a deleted task.");
+                throw new DomainLayerException(DomainExceptionType.InvalidTaskStatus, "You can not update a deleted task.");
 
             if (name != null) this.Name = name;
             if (description != null) this.Description = description;
@@ -53,20 +54,20 @@ namespace Proj.Manager.Core.Entities
         public void AddMember(Member member)
         {
             if (IsCompleted)
-                throw new Exception("You can not add members to a completed task.");
+                throw new DomainLayerException(DomainExceptionType.InvalidTaskStatus, "You can not add members to a completed task.");
 
             if (IsDeleted)
-                throw new Exception("You can not add members to a deleted task.");
+                throw new DomainLayerException(DomainExceptionType.InvalidTaskStatus, "You can not add members to a deleted task.");
 
             this.Members.Add(member);
         }
         public void RemoveMember(Member member)
         {
             if (IsCompleted)
-                throw new Exception("You can not remove members to a completed task.");
+                throw new DomainLayerException(DomainExceptionType.InvalidTaskStatus, "You can not remove members from a completed task.");
 
             if (IsDeleted)
-                throw new Exception("You can not remove members to a deleted task.");
+                throw new DomainLayerException(DomainExceptionType.InvalidTaskStatus, "You can not remove members from a deleted task.");
 
             this.Members.Remove(member);
 

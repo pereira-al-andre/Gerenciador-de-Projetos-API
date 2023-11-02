@@ -5,6 +5,13 @@ namespace Proj.Manager.Application.DTO.RequestModels.Project
 {
     public class UpdateProjectRequest {
 
+        public UpdateProjectRequest(Guid id, string name, string description)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+        }
+
         [Required]
         public Guid Id { get; set; }
 
@@ -15,9 +22,6 @@ namespace Proj.Manager.Application.DTO.RequestModels.Project
         [AllowNull]
         [MaxLength(255)]
         public string Description { get; set; } = null;
-
-        [AllowNull]
-        public DateTime EndDate { get; set; }
 
     }
 }

@@ -1,27 +1,24 @@
 ﻿using Proj.Manager.Application.DTO.RequestModels.Project;
 using Proj.Manager.Application.DTO.RequestModels.Task;
 using Proj.Manager.Application.DTO.ViewModels;
-using Proj.Manager.Application.Exceptions;
+using Proj.Manager.Application.Enums;
+using Proj.Manager.Application.Exceptions.Common;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Core.ValueObjects;
-using System.Reflection;
 
 namespace Proj.Manager.Application.Services
 {
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _repository;
-        private readonly ITaskRepository _taskRepository;
         private readonly IMemberRepository _memberRepository;
         public ProjectService(
             IProjectRepository projectRepository,
-            ITaskRepository taskRepository,
             IMemberRepository memberRepository)
         {
             _repository = projectRepository;
-            _taskRepository = taskRepository;
             _memberRepository = memberRepository;
         }
 
@@ -29,7 +26,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var project = _repository.Find(request.Id) ?? throw new Exception("Project not found.");
+                var project = _repository.Find(request.Id) ?? throw new ApplicationLayerException(ApplicationExceptionType.ProjectNotFound);
 
                 project.Update(new Name(request.Name), new Description(request.Description));
 
@@ -44,7 +41,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var project = _repository.Find(id) ?? throw new ProjectNotFoundException("Project not found.");
+                var project = _repository.Find(id) ?? throw new ApplicationLayerException(ApplicationExceptionType.ProjectNotFound);
 
                 return new ProjectViewModel(project);
             }
@@ -57,7 +54,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var model = _repository.Find(id, "Tasks") ?? throw new ProjectNotFoundException("Project not found");
+                var model = _repository.Find(id, "Tasks") ?? throw new ApplicationLayerException(ApplicationExceptionType.ProjectNotFound);
 
                 model.Cancel();
 
@@ -72,7 +69,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var manager = _memberRepository.Find(request.ManagerId) ?? throw new Exception("Member not found.");
+                var manager = _memberRepository.Find(request.ManagerId) ?? throw new ApplicationLayerException(ApplicationExceptionType.MemberNotFound);
 
                 var project = new Project(
                     manager,
@@ -90,7 +87,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var model = _repository.Find(id, "Tasks") ?? throw new ProjectNotFoundException("Project not found");                
+                var model = _repository.Find(id, "Tasks") ?? throw new ApplicationLayerException(ApplicationExceptionType.ProjectNotFound);                
 
                 model.Delete();
 
@@ -105,7 +102,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var model = _repository.Find(id) ?? throw new ProjectNotFoundException("Project not found");
+                var model = _repository.Find(id) ?? throw new ApplicationLayerException(ApplicationExceptionType.ProjectNotFound);
 
                 model.Finish();
 
@@ -146,7 +143,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var project = _repository.Find(projectId) ?? throw new Exception("Project not found.");
+                var project = _repository.Find(projectId) ?? throw new ApplicationLayerException(ApplicationExceptionType.ProjectNotFound);
 
                 project.AddTask(
                     new Name(request.Name),
@@ -163,7 +160,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var project = _repository.Find(projectId, "Tasks") ?? throw new ProjectNotFoundException("Project not found");
+                var project = _repository.Find(projectId, "Tasks") ?? throw new ApplicationLayerException(ApplicationExceptionType.ProjectNotFound);
 
                 project.RemoveTask(taskId);
 
@@ -179,8 +176,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var project = _repository.Find(projectId, "Tasks") ?? throw new ProjectNotFoundException("Project not found.");
-
+                var project = _repository.Find(projectId, "Tasks") ?? throw new ApplicationLayerException(ApplicationExceptionType.ProjectNotFound);
                 return TaskViewModel.TasksList(project.Tasks);
             }
             catch (Exception)

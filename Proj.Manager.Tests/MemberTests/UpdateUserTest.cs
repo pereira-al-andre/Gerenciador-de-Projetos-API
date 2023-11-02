@@ -1,10 +1,12 @@
 ﻿using AutoFixture;
 using Moq;
 using Proj.Manager.Application.DTO.RequestModels.Member;
+using Proj.Manager.Application.Exceptions.Common;
 using Proj.Manager.Application.Services;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Enums;
+using Proj.Manager.Core.Exceptions.Common;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Core.ValueObjects;
 using Shouldly;
@@ -46,7 +48,7 @@ namespace Proj.Manager.Tests.MemberTests
 
             _memberRepositoryMock.Setup(x => x.Find(It.IsAny<Guid>())).Returns(expectedMember);
 
-            Should.Throw(() => _memberService.Update(request), typeof(ArgumentException), "Invalid argument");
+            Should.Throw(() => _memberService.Update(request), typeof(DomainLayerException), "Invalid argument");
         }
     }
 }

@@ -7,6 +7,8 @@ using Proj.Manager.Core.Enums;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Core.ValueObjects;
 using Shouldly;
+using Proj.Manager.Application.Exceptions.Common;
+using Proj.Manager.Core.Exceptions.Common;
 
 namespace Proj.Manager.Tests.MemberTests
 {
@@ -46,7 +48,7 @@ namespace Proj.Manager.Tests.MemberTests
 
             if (String.IsNullOrEmpty(request.NewPassword))
             {
-                Should.Throw(() => _memberService.UpdatePassword(request), typeof(ArgumentException), "Invalid password");
+                Should.Throw(() => _memberService.UpdatePassword(request), typeof(DomainLayerException), "Invalid password");
             }
             else
             {

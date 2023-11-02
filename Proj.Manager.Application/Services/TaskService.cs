@@ -1,6 +1,8 @@
 ﻿using Proj.Manager.Application.DTO.RequestModels.Task;
 using Proj.Manager.Application.DTO.ViewModels;
+using Proj.Manager.Application.Enums;
 using Proj.Manager.Application.Exceptions;
+using Proj.Manager.Application.Exceptions.Common;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Enums;
@@ -27,7 +29,7 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task não encontrada.");
+                var task = _repository.Find(id) ?? throw new ApplicationLayerException(ApplicationExceptionType.TaskNotFound);
 
                 return new TaskViewModel(task);
             }
@@ -66,7 +68,8 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var task = _repository.Find(taskId) ?? throw new Exception("Task not found");
+                var task = _repository.Find(taskId) ?? throw new ApplicationLayerException(ApplicationExceptionType.TaskNotFound);
+
                 var members = task.Members.OrderBy(x => x.Name);
                 return MemberViewModel.MembersList(members.ToList());
             }
@@ -80,7 +83,8 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var task = _repository.Find(taskId) ?? throw new TaskNotFoundException("Task not found.");
+                var task = _repository.Find(taskId) ?? throw new ApplicationLayerException(ApplicationExceptionType.TaskNotFound);
+
 
                 var membersList = _memberRepositoy.All(x => members.Contains(x.Id)).ToList();
 
@@ -97,8 +101,10 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var task = _repository.Find(taskId) ?? throw new TaskNotFoundException("Task not found.");
-                var memeber = _memberRepositoy.Find(memberId) ?? throw new MemberNotFoundException("Member not found.");
+                var task = _repository.Find(taskId) ?? throw new ApplicationLayerException(ApplicationExceptionType.TaskNotFound);
+
+                var memeber = _memberRepositoy.Find(memberId) ?? throw new ApplicationLayerException(ApplicationExceptionType.MemberNotFound);
+
 
                 task.RemoveMember(memeber);
 
@@ -113,7 +119,8 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var task = _repository.Find(request.Id) ?? throw new Exception("Task not found.");
+                var task = _repository.Find(request.Id) ?? throw new ApplicationLayerException(ApplicationExceptionType.TaskNotFound);
+
 
                 task.Update(new Name(request.Name), new Description(request.Description));
 
@@ -128,7 +135,8 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task not found.");
+                var task = _repository.Find(id) ?? throw new ApplicationLayerException(ApplicationExceptionType.TaskNotFound);
+
 
                 task.Delete();
 
@@ -143,7 +151,8 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task not found.");
+                var task = _repository.Find(id) ?? throw new ApplicationLayerException(ApplicationExceptionType.TaskNotFound);
+
 
                 task.Complete();
 
@@ -158,7 +167,8 @@ namespace Proj.Manager.Application.Services
         {
             try
             {
-                var task = _repository.Find(id) ?? throw new TaskNotFoundException("Task not found.");
+                var task = _repository.Find(id) ?? throw new ApplicationLayerException(ApplicationExceptionType.TaskNotFound);
+
 
                 task.Start();
 

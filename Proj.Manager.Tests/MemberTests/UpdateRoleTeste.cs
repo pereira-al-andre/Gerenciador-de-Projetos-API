@@ -28,8 +28,8 @@ namespace Proj.Manager.Tests.MemberTests
                 new Password("password"),
                 Role.Developer);
 
-            Add(new UpdateRoleRequest(_expectedMemberManager.Id, Role.Manager), _expectedMemberManager);
-            Add(new UpdateRoleRequest(_expectedMemberDeveloper.Id, Role.Developer), _expectedMemberDeveloper);
+            Add(new UpdateRoleRequest(_expectedMemberManager.Id, Role.Developer), _expectedMemberManager);
+            Add(new UpdateRoleRequest(_expectedMemberDeveloper.Id, Role.Manager), _expectedMemberDeveloper);
         }
     }
 
@@ -52,6 +52,7 @@ namespace Proj.Manager.Tests.MemberTests
 
             _memberRepositoryMock.Setup(x => x.Find(It.IsAny<Guid>())).Returns(expectedMember);
 
+            _memberService.UpdateRole(request);
             expectedMember.Role.ShouldBe(request.Role);
         }
     }

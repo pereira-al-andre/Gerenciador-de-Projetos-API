@@ -5,6 +5,14 @@ namespace Proj.Manager.Application.DTO.RequestModels.Project
 {
     public class CreateProjectRequest
     {
+        public CreateProjectRequest(Guid managerId, string name, string description)
+        {
+            ManagerId = managerId;
+            Name = name;
+            Description = description;
+        }
+
+
         [Required]
         public Guid ManagerId { get; set; }
 
@@ -15,11 +23,5 @@ namespace Proj.Manager.Application.DTO.RequestModels.Project
         [AllowNull]
         [MaxLength(255)]
         public string Description { get; set; } = null;
-
-        [Required]
-        public DateTime StartDate { get; set; }
-
-        [AllowNull]
-        public DateTime EndDate { get; set; }
     }
 }

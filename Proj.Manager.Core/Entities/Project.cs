@@ -1,4 +1,5 @@
 ﻿using Proj.Manager.Core.Enums;
+using Proj.Manager.Core.Exceptions.Common;
 using Proj.Manager.Core.Primitives;
 using Proj.Manager.Core.ValueObjects;
 
@@ -20,12 +21,12 @@ namespace Proj.Manager.Core.Entities
             this.ManagerId = member.Id;
         }
 
-        public Guid ManagerId { get; set; }
-        public Name Name { get; set; } = null!;
-        public Description Description { get; set; } = null!;
-        public DateTime? StartDate { get; set; }
-        public DateTime? FinishDate { get; set; }
-        public ProjectStatus Status { get; set; } = ProjectStatus.ToDo;
+        public Guid ManagerId { get; private set; }
+        public Name Name { get; private set; } = null!;
+        public Description Description { get; private set; } = null!;
+        public DateTime? StartDate { get; private set; }
+        public DateTime? FinishDate { get; private set; }
+        public ProjectStatus Status { get; private set; } = ProjectStatus.ToDo;
 
         public bool IsCompleted => this.Status == ProjectStatus.Completed;
         public bool IsTodo => this.Status == ProjectStatus.ToDo;
@@ -33,15 +34,15 @@ namespace Proj.Manager.Core.Entities
         public bool IsCanceled => this.Status == ProjectStatus.Canceled;
         public bool IsDeleted => this.Status == ProjectStatus.Deleted;
 
-        public List<Task> Tasks { get; set; } = new();
-        public Member Manager { get; set; } = null!;
+        public List<Task> Tasks { get; private set; } = new();
+        public Member Manager { get; private set; } = null!;
 
         public void Update(
             Name? name = null,
             Description? description = null)
         {
-            if (!IsOnGoing || !IsTodo)
-                throw new Exception("Can not update the project. It got to be on 'ongoing' or 'todo' status.");
+            if (!IsOnGoing && !IsTodo)
+                throw new DomainLayerException(DomainExceptionType.InvalidProjectStatus, "Can not update the project. It got to be on 'ongoing' or 'todo' status.");
 
             if (name != null) this.Name = name;
             if (description != null) this.Description = description;
@@ -50,8 +51,8 @@ namespace Proj.Manager.Core.Entities
             Name name,
             Description description) {
 
-            if (!IsOnGoing || !IsTodo) 
-                throw new Exception("Can not add task to the project. It got to be on 'ongoing' or 'todo' status.");
+            if (!IsOnGoing && !IsTodo) 
+                throw new DomainLayerException(DomainExceptionType.InvalidProjectStatus, "Can not add task to the project. It got to be on 'ongoing' or 'todo' status.");
 
             var task = new Task(this, name, description);
 
@@ -61,8 +62,8 @@ namespace Proj.Manager.Core.Entities
         }
         public void RemoveTask(Guid taskId)
         {
-            if (!IsOnGoing || !IsTodo)
-                throw new Exception("Can not remove task from the project. It got to be on 'ongoing' or 'todo' status.");
+            if (!IsOnGoing && !IsTodo)
+                throw new DomainLayerException(DomainExceptionType.InvalidProjectStatus, "Can not remove task from the project. It got to be on 'ongoing' or 'todo' status.");
 
             var task = Tasks.SingleOrDefault(x => x.Id == taskId) ?? throw new Exception("Task not found on this project.");
 
@@ -84,7 +85,7 @@ namespace Proj.Manager.Core.Entities
             if (!IsOnGoing) return;
 
             if (Tasks.Any(x => x.Status == Enums.TaskStatus.ToDo || x.Status == Enums.TaskStatus.OnGoing))
-                throw new Exception("You can not finish this project. There are both 'on going' or 'to do' tasks on it.");
+                throw new DomainLayerException(DomainExceptionType.InvalidTaskStatus, "You can not finish this project. There are both 'on going' or 'to do' tasks on it.");
 
             Status = ProjectStatus.Completed;
             FinishDate = DateTime.Now;

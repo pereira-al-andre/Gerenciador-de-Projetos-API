@@ -2,27 +2,19 @@ using AutoFixture;
 using Moq;
 using Proj.Manager.Application.DTO.RequestModels.Member;
 using Proj.Manager.Application.DTO.ViewModels;
+using Proj.Manager.Application.Exceptions.Common;
 using Proj.Manager.Application.Services;
 using Proj.Manager.Application.Services.Interfaces;
 using Proj.Manager.Core.Entities;
 using Proj.Manager.Core.Enums;
 using Proj.Manager.Core.Exceptions;
+using Proj.Manager.Core.Exceptions.Common;
 using Proj.Manager.Core.Repositories;
 using Proj.Manager.Core.ValueObjects;
 using Shouldly;
 
-namespace Proj.Manager.Tests.MemberTests
+namespace Proj.Manager.Tests
 {
-    public class CreateTestModel : TheoryData<CreateMemberRequest>
-    {
-        public CreateTestModel()
-        {
-            Add(new CreateMemberRequest("", "", "", Role.Developer));
-            Add(new CreateMemberRequest("Name", "", "", Role.Developer));
-            Add(new CreateMemberRequest("Name", "mail@mail", "", Role.Developer));
-            Add(new CreateMemberRequest("", "mail@mail", "password", Role.Developer));
-        }
-    }
     public class CreateUserTest
     {
         private readonly IMemberRepository _memberRepositoy;
@@ -54,7 +46,7 @@ namespace Proj.Manager.Tests.MemberTests
 
         [Fact]
 
-        public void Create_Should_ReturnMemberViewModel_WhenValidDeveloperMember()
+        public void ValidDeveloperMember_CreateCalled_ReturnValidMemberViewModel()
         {
             var member = _memberService.Create(_validMemberRequest);
 
@@ -65,11 +57,19 @@ namespace Proj.Manager.Tests.MemberTests
             _memberRepositoyMock.Verify(m => m.Create(It.IsAny<Member>()), Times.Once);
         }
 
-        [Theory]
-        [ClassData(typeof(CreateTestModel))]
-        public void InvalidEmailDeveloperMember_CreateCalled_ReturnException_Two(CreateMemberRequest invalidRequest)
+        [Fact]
+        public void InvalidEmailDeveloperMember_CreateCalled_ReturnException()
         {
-            Should.Throw(() => _memberService.Create(invalidRequest), typeof(ArgumentException), "Invalid argument passed");
+            var invalidMember = new CreateMemberRequest("Invalid Member", "", "senha", Role.Developer);
+
+            Should.Throw(() => _memberService.Create(invalidMember), typeof(DomainLayerException), "Invalid email");
+        }
+
+        [Fact]
+        public void InvalidPasswordDeveloperMember_CreateCalled_ReturnException()
+        {
+            var invalidMember = new CreateMemberRequest("Invalid Member", "email@mail.com", "", Role.Developer);
+            Should.Throw(() => _memberService.Create(invalidMember), typeof(DomainLayerException), "Invalid argument passed");
         }
     }
 }

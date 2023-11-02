@@ -1,4 +1,5 @@
-﻿using Proj.Manager.Core.Exceptions;
+﻿using Proj.Manager.Core.Enums;
+using Proj.Manager.Core.Exceptions.Common;
 using Proj.Manager.Core.Primitives;
 
 namespace Proj.Manager.Core.ValueObjects
@@ -15,7 +16,7 @@ namespace Proj.Manager.Core.ValueObjects
 
         private void Validate(string value)
         {
-            if (value.Length == 0) throw new InvalidDescriptionException("Invalid description passed.");
+            if (value.Length == 0) throw new DomainLayerException(DomainExceptionType.InvalidDescription, "Invalid description passed.");
         }
     }
 }
