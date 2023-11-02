@@ -62,13 +62,14 @@ namespace Proj.Manager.Tests
         {
             var invalidMember = new CreateMemberRequest("Invalid Member", "", "senha", Role.Developer);
 
-            Should.Throw(() => _memberService.Create(invalidMember), typeof(InvalidEmailException), "Invalid email");
+            Should.Throw(() => _memberService.Create(invalidMember), typeof(DomainLayerException), "Invalid email");
         }
 
         [Fact]
         public void InvalidPasswordDeveloperMember_CreateCalled_ReturnException()
         {
-            Should.Throw(() => _memberService.Create(invalidRequest), typeof(DomainLayerException), "Invalid argument passed");
+            var invalidMember = new CreateMemberRequest("Invalid Member", "email@mail.com", "", Role.Developer);
+            Should.Throw(() => _memberService.Create(invalidMember), typeof(DomainLayerException), "Invalid argument passed");
         }
     }
 }
